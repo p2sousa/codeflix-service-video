@@ -28,3 +28,7 @@ yarn-error.log
 .docker/database/data
 !.docker/database/dumps/.gitkeep
 !.docker/database/data/.gitkeep
+
+### ide-helper ###
+_ide_helper.php
+.phpstorm.meta.php
