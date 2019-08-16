@@ -4,12 +4,12 @@ services:
 
   app:
     build: .
-    container_name: app
+    container_name: codefilx-video-app
     entrypoint: dockerize -template ./.docker/php/.env:.env -wait tcp://db:3306 -timeout 60s ./.docker/entrypoint.sh
     ports:
       - "9000"
     environment:
-      - DB_DATABASE=laravel
+      - DB_DATABASE=codefilx_video_app
       - DB_USERNAME=root
       - DB_PASSWORD=root
     volumes:
@@ -23,7 +23,7 @@ services:
 
   nginx:
     build: ./.docker/nginx
-    container_name: nginx
+    container_name: codefilx-video-nginx
     entrypoint: dockerize -template ./.docker/nginx/nginx.tmpl:/etc/nginx/conf.d/nginx.conf -wait tcp://app:9000 nginx -g "daemon off;"
     restart: always
     tty: true
@@ -43,13 +43,13 @@ services:
   db:
     image: mysql:5.7
     command: --innodb-use-native-aio=0
-    container_name: db
+    container_name: codefilx-videos-db
     tty: true
     restart: always
     ports:
       - "3306:3306"
     environment:
-      - MYSQL_DATABASE=laravel
+      - MYSQL_DATABASE=codefilx_video_app
       - MYSQL_USER=root
       - MYSQL_ROOT_PASSWORD=root
     volumes:
@@ -61,7 +61,7 @@ services:
 
   redis:
     image: redis:alpine
-    container_name: redis
+    container_name: codefilx-video-redis
     restart: always
     ports:
       - "6379:6379"

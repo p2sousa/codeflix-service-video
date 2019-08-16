@@ -1,6 +1,6 @@
 FROM php:7.3.6-fpm-alpine3.9
 
-MAINTAINER Pablo Sousa <pablosousa.ads@gmail.com>
+LABEL maintainer="Pablo Sousa <pablosousa.ads@gmail.com>"
 
 # install extensions and aplications linux
 RUN apk add --no-cache openssl bash mysql-client nodejs npm

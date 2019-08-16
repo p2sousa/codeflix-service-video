@@ -1,6 +1,6 @@
 FROM nginx:1.17-alpine
 
-MAINTAINER Pablo Sousa <pablosousa.ads@gmail.com>
+LABEL maintainer="Pablo Sousa <pablosousa.ads@gmail.com>"
 
 ARG UID=1000
 ARG GID=1000
@@ -16,4 +16,3 @@ RUN wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSI
   && rm dockerize-alpine-linux-amd64-$DOCKERIZE_VERSION.tar.gz
 
 WORKDIR /var/www
-#CMD ["nginx"]
