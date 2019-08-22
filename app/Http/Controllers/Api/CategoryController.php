@@ -6,12 +6,24 @@ use App\Http\Controllers\Controller;
 use App\Models\Category;
 use Illuminate\Http\Request;
 
+/**
+ * Class CategoryController
+ * @package App\Http\Controllers\Api
+ */
 class CategoryController extends Controller
 {
     /**
+     * @var array
+     */
+    private $rules = [
+        'name' => 'required|max:255',
+        'is_active' => 'boolean'
+    ];
+
+    /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Category[]|\Illuminate\Database\Eloquent\Collection
      */
     public function index()
     {
@@ -21,15 +33,13 @@ class CategoryController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @return mixed
+     * @throws \Illuminate\Validation\ValidationException
      */
     public function store(Request $request)
     {
-        $this->validate($request, [
-            'name' => 'required|max:255',
-            'is_active' => 'boolean'
-        ]);
+        $this->validate($request, $this->rules);
 
         return Category::create($request->all());
     }
@@ -37,8 +47,8 @@ class CategoryController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Category  $category
-     * @return \Illuminate\Http\Response
+     * @param Category $category
+     * @return Category
      */
     public function show(Category $category)
     {
@@ -48,23 +58,28 @@ class CategoryController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Category  $category
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @param Category $category
+     * @return Category
+     * @throws \Illuminate\Validation\ValidationException
      */
     public function update(Request $request, Category $category)
     {
-        //
+        $this->validate($request, $this->rules);
+        $category->update($request->all());
+        return $category;
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Category  $category
+     * @param Category $category
      * @return \Illuminate\Http\Response
+     * @throws \Exception
      */
     public function destroy(Category $category)
     {
-        //
+        $category->delete();
+        return response()->noContent();
     }
 }
