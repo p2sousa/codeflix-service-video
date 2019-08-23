@@ -11,6 +11,6 @@ npm install
 
 echo "rodando migrations...."
 php artisan key:generate
-php artisan migrate
+php artisan migrate:refresh --seed
 
 php-fpm
