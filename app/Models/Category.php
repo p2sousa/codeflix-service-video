@@ -11,6 +11,7 @@ class Category extends Model
     use SoftDeletes;
     use Uuid;
 
+    public $incrementing = false;
     protected $fillable = ['name', 'description', 'is_active'];
     protected $dates = ['deleted_at'];
     protected $casts = ['id' => 'string'];
