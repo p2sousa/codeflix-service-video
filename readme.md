@@ -23,6 +23,6 @@ Verifique a lista de `endpoints` do microserviço com o seguinte comando:
 
 ``` bash
 
-$ docker exec -it codefilx-video-app php artisan route:list
+$ docker exec -it codeflix-video-app php artisan route:list
 
 ``` 
