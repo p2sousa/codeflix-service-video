@@ -4,14 +4,16 @@ services:
 
   app:
     build: .
-    container_name: codefilx-video-app
-    entrypoint: dockerize -template ./.docker/php/.env:.env -wait tcp://db:3306 -timeout 60s ./.docker/entrypoint.sh
+    container_name: codeflix-video-app
+    entrypoint: ./.docker/entrypoint.sh
     ports:
       - "9000"
     environment:
-      - DB_DATABASE=codefilx_video_app
-      - DB_USERNAME=root
-      - DB_PASSWORD=root
+      - _DB_HOST=db
+      - _DB_DATABASE=codeflix_videos
+      - _DB_USERNAME=root
+      - _DB_PASSWORD=root
+      - _TEST_DB_DATABASE=codeflix_videos_test
     volumes:
       - .:/var/www:rw,cached
       - ./.docker/php/log:/var/log:rw,cached
@@ -23,7 +25,7 @@ services:
 
   nginx:
     build: ./.docker/nginx
-    container_name: codefilx-video-nginx
+    container_name: codeflix-video-nginx
     entrypoint: dockerize -template ./.docker/nginx/nginx.tmpl:/etc/nginx/conf.d/nginx.conf -wait tcp://app:9000 nginx -g "daemon off;"
     restart: always
     tty: true
@@ -43,25 +45,25 @@ services:
   db:
     image: mysql:5.7
     command: --innodb-use-native-aio=0
-    container_name: codefilx-videos-db
+    container_name: codeflix-videos-db
     tty: true
     restart: always
     ports:
       - "3306:3306"
     environment:
-      - MYSQL_DATABASE=codefilx_video_app
       - MYSQL_USER=root
       - MYSQL_ROOT_PASSWORD=root
     volumes:
       - ./.docker/database/dumps:/dumps:rw,cached
       - ./.docker/database/data:/var/lib/mysql:rw,cached
       - ./.docker/database/config:/etc/mysql/conf.d:rw,cached
+      - ./.docker/database/config:/docker-entrypoint-initdb.d
     networks:
       - app-network
 
   redis:
     image: redis:alpine
-    container_name: codefilx-video-redis
+    container_name: codeflix-video-redis
     restart: always
     ports:
       - "6379:6379"
