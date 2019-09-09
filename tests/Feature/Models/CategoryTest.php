@@ -7,10 +7,12 @@ use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\Traits\Uuid;
 
 class CategoryTest extends TestCase
 {
     use DatabaseMigrations;
+    use Uuid;
 
     public function testList()
     {
@@ -40,6 +42,7 @@ class CategoryTest extends TestCase
 
         $category->refresh();
 
+        $this->assertTrue($this->isUuid($category->id));
         $this->assertEquals('teste1', $category->name);
         $this->assertNull($category->description);
         $this->assertTrue($category->is_active);
@@ -71,5 +74,36 @@ class CategoryTest extends TestCase
         ]);
 
         $this->assertTrue($category->is_active);
+    }
+
+    public function testUpdate()
+    {
+        $category = factory(Category::class)->create([
+            'description' => 'test_description',
+            'is_active' => false,
+        ])->first();
+
+        $data = [
+            'name' => 'test_name_updated',
+            'description' => 'test_description_updated',
+            'is_active' => true,
+        ];
+
+        $category->update($data);
+
+        foreach ($data as $key => $value) {
+            $this->assertEquals($value, $category->{$key});
+        }
+    }
+
+    public function testDelete()
+    {
+        /** @var Category $category */
+        $category = factory(Category::class)->create()->first();
+
+        $category->delete();
+
+        $this->assertNotNull($category->deleted_at);
+        $this->assertNotNull(Category::onlyTrashed()->first());
     }
 }
