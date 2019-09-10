@@ -1,12 +1,11 @@
 language: php
 sudo: required
-dist: trusty
 
 php:
   - 7.3
 
-services:
-  - mysql
+addons:
+  mariadb: '10.0'
 
 before_install:
   - mysql -e 'create database testing;'
