@@ -1,10 +1,15 @@
 language: php
+sudo: required
+dist: trusty
 
 php:
   - 7.3
 
 services:
   - mysql
+
+before_install:
+  - mysql -e 'create database testing;'
 
 cache:
   directories:
@@ -13,7 +18,6 @@ cache:
 
 before_script:
   - cp .docker/php/.env.travis .env.testing
-  - sudo mysql -e 'create database codeflix_videos_test;'
   - composer self-update
   - composer install --no-interaction
 
