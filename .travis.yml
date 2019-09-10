@@ -5,7 +5,7 @@ php:
 
 before_script:
   - cp .docker/php/.env.travis .env.testing
-  - cp .docker/php/.env.travis .env
+  - mysql -e 'create database codeflix_videos_test;'
   - composer self-update
   - composer install --no-interaction
 
