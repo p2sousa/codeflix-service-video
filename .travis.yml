@@ -3,9 +3,17 @@ language: php
 php:
   - 7.3
 
+addons:
+  mariadb: 10.4
+
+cache:
+  directories:
+    - node_modules
+    - vendor
+
 before_script:
   - cp .docker/php/.env.travis .env.testing
-  - mysql -e 'create database codeflix_videos_test;'
+  - sudo mysql -e 'create database codeflix_videos_test;'
   - composer self-update
   - composer install --no-interaction
 
