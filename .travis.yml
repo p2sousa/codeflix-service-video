@@ -4,8 +4,8 @@ php:
   - 7.3
 
 before_script:
-  - cp ./docker/php/.env.testing .env.testing
-  - cp ./docker/php/.env.testing .env
+  - cp .docker/php/.env.testing .env.testing
+  - cp .docker/php/.env.testing .env
   - composer self-update
   - composer install --no-interaction
 
