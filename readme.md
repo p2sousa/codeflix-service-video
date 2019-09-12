@@ -1,5 +1,6 @@
 ## codeflix-service-video
 [![Build Status](https://travis-ci.org/p2sousa/codeflix-service-video.svg?branch=master)](https://travis-ci.org/p2sousa/codeflix-service-video)
+[![codecov](https://codecov.io/gh/p2sousa/codeflix-service-video/branch/master/graph/badge.svg)](https://codecov.io/gh/p2sousa/codeflix-service-video)
 
 Microserviço de video da codeflix, construido com Laravel.
 
