@@ -93,4 +93,72 @@ class CategoryControllerTest extends TestCase
                 \Lang::trans('validation.boolean', ['attribute' => 'is active'])
             ]);
     }
+
+    public function testStore()
+    {
+        $response = $this->json('POST', route('categories.store'), [
+            'name' => 'teste'
+        ]);
+
+        $id = $response->json('id');
+        $category = Category::find($id);
+
+        $response
+            ->assertStatus(201)
+            ->assertJson($category->toArray());
+
+        $this->assertTrue($response->json('is_active'));
+        $this->assertNull($response->json('description'));
+
+
+        $response = $this->json('POST', route('categories.store'), [
+            'name' => 'teste',
+            'description' => 'description',
+            'is_active' => false,
+        ]);
+
+        $response
+            ->assertStatus(201)
+            ->assertJsonFragment([
+                'description' => 'description',
+                'is_active' => false,
+            ]);
+    }
+
+    public function testUpdate()
+    {
+        $category = factory(Category::class)->create([
+            'description' => 'description',
+            'is_active' => false,
+        ]);
+
+        $response = $this->json('PUT', route('categories.update', ['category' => $category->id]), [
+            'name' => 'teste',
+            'description' => 'description test update',
+            'is_active' => true,
+        ]);
+
+        $id = $response->json('id');
+        $category = Category::find($id);
+
+        $response
+            ->assertStatus(200)
+            ->assertJson($category->toArray())
+            ->assertJsonFragment([
+                'name' => 'teste',
+                'description' => 'description test update',
+                'is_active' => true,
+            ]);
+
+        $response = $this->json('PUT', route('categories.update', ['category' => $category->id]), [
+            'name' => 'teste',
+            'description' => '',
+            'is_active' => true,
+        ]);
+
+        $response
+            ->assertJsonFragment([
+                'description' => null,
+            ]);
+    }
 }
