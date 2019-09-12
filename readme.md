@@ -28,3 +28,13 @@ Verifique a lista de `endpoints` do microserviço com o seguinte comando:
 $ docker exec -it codeflix-video-app php artisan route:list
 
 ``` 
+
+## Testes
+
+Para executar os testes entre no container e rode o comando.
+
+``` bash
+
+$ docker exec -it codeflix-video-app vendor/bin/phpunit
+
+``` 
