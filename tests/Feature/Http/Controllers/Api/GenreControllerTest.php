@@ -95,4 +95,67 @@ class GenreControllerTest extends TestCase
                 \Lang::trans('validation.boolean', ['attribute' => 'is active'])
             ]);
     }
+
+    public function testStore()
+    {
+        $response = $this->json('POST', route('genres.store'), [
+            'name' => 'teste'
+        ]);
+
+        $id = $response->json('id');
+        $genre = Genre::find($id);
+
+        $response
+            ->assertStatus(201)
+            ->assertJson($genre->toArray());
+
+        $this->assertTrue($response->json('is_active'));
+
+        $response = $this->json('POST', route('genres.store'), [
+            'name' => 'teste',
+            'is_active' => false,
+        ]);
+
+        $response
+            ->assertStatus(201)
+            ->assertJsonFragment([
+                'is_active' => false,
+            ]);
+    }
+
+    public function testUpdate()
+    {
+        $genre = factory(Genre::class)->create([
+            'is_active' => false,
+        ]);
+
+        $response = $this->json('PUT', route('genres.update', ['genre' => $genre->id]), [
+            'name' => 'teste',
+            'is_active' => true,
+        ]);
+
+        $id = $response->json('id');
+        $genre = Genre::find($id);
+
+        $response
+            ->assertStatus(200)
+            ->assertJson($genre->toArray())
+            ->assertJsonFragment([
+                'name' => 'teste',
+                'is_active' => true,
+            ]);
+    }
+
+    public function testDestroy()
+    {
+        $genre = factory(Genre::class)->create();
+
+        $response = $this->json('DELETE', route('genres.destroy', ['genre' => $genre->id]));
+
+        $response
+            ->assertStatus(204);
+
+        $this->assertEmpty($response->getContent());
+
+    }
 }
