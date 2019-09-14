@@ -4,7 +4,7 @@
 namespace Tests\Traits;
 
 
-trait Uuid
+trait TestUuid
 {
     protected function isUuid($uuid)
     {

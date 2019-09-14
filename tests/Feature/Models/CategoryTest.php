@@ -7,12 +7,12 @@ use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Tests\Traits\Uuid;
+use Tests\Traits\TestUuid;
 
 class CategoryTest extends TestCase
 {
     use DatabaseMigrations;
-    use Uuid;
+    use TestUuid;
 
     public function testList()
     {
