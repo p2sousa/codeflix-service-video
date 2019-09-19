@@ -2,7 +2,6 @@
 
 namespace Tests\Feature\Http\Controllers\Api;
 
-
 use App\Http\Controllers\Api\BasicController;
 use Illuminate\Http\Request;
 use Tests\Stubs\Controllers\CategoryControllerStub;
@@ -37,6 +36,18 @@ class BasicControllerTest extends TestCase
         ]);
 
         $this->assertEquals([$category->toArray()], $this->controller->index()->toArray());
+    }
+
+    public function testShow()
+    {
+        /** @var CategoryStub $category */
+        $category =  CategoryStub::create(['name' => 'test']);
+
+        $obj = $this->controller->show($category->id);
+        $this->assertEquals(
+            CategoryStub::find($category->id)->toArray(),
+            $obj->toArray()
+        );
     }
 
     /**
@@ -100,7 +111,29 @@ class BasicControllerTest extends TestCase
         $result = $reflectionMethod->invokeArgs($this->controller, [0]);
     }
 
+    public function testUpdate()
+    {
+        /** @var CategoryStub $category */
+        $category =  CategoryStub::create(['name' => 'test']);
 
+        $request = \Mockery::mock(Request::class);
+        $request->shouldReceive('all')
+            ->once()
+            ->andReturn(['name' => 'test_update']);
 
+        $obj = $this->controller->update($request, $category->id);
+        $this->assertEquals(
+            CategoryStub::find($category->id)->toArray(),
+            $obj->toArray()
+        );
+    }
 
+    public function testDestroy()
+    {
+        /** @var CategoryStub $category */
+        $category =  CategoryStub::create(['name' => 'test']);
+
+        $obj = $this->controller->destroy($category->id);
+        $this->assertEquals($obj->getStatusCode(), 204);
+    }
 }

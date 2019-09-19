@@ -20,5 +20,11 @@ class CategoryControllerStub extends BasicController
         ];
     }
 
-
+    protected function rulesUpdate()
+    {
+        return [
+            'name' => 'required|max:255',
+            'description' => 'nullable'
+        ];
+    }
 }
