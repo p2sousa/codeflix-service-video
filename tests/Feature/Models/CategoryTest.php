@@ -5,8 +5,6 @@ namespace Tests\Feature\Models;
 use App\Models\Category;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Tests\TestCase;
-use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\Traits\TestUuid;
 
 class CategoryTest extends TestCase
