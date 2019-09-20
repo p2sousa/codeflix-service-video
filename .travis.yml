@@ -5,7 +5,12 @@ dist: xenial
 php:
   - 7.3
 
+branches:
+  only:
+    - master
+
 services:
+  - docker
   - mysql
 
 before_install:
@@ -20,9 +25,26 @@ before_script:
   - cp .docker/php/.env.travis .env.testing
   - composer self-update
   - composer install --no-interaction
+  - .env.example .env
+  - .env | sort
+  - IMAGE_NAME=p2sousa/codeflix-service-video
+  - IMAGE_LATEST_VERSION="${IMAGE_NAME}:latest"
 
 script:
   - vendor/bin/phpunit --coverage-clover=coverage.xml
+  - docker build -t "${IMAGE_LATEST_VERSION}" -f Dockerfile.prod .
 
 after_success:
   - bash <(curl -s https://codecov.io/bash)
+
+after_script:
+  - docker images
+
+before_deploy:
+  - echo "${DOCKER_HUB_PASSWORD}" | docker login --username "${DOCKER_HUB_USER}" --password-stdin
+
+deploy:
+  provider: script
+  script: docker push "${IMAGE_LATEST_VERSION}"
+  on:
+    branch: master
