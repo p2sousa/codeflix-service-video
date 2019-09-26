@@ -3,7 +3,9 @@
 namespace Tests\Feature\Http\Controllers\Api;
 
 use App\Http\Controllers\Api\BasicController;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
 use Tests\Stubs\Controllers\CategoryControllerStub;
 use Tests\Stubs\Models\CategoryStub;
 use Tests\TestCase;
@@ -50,11 +52,9 @@ class BasicControllerTest extends TestCase
         );
     }
 
-    /**
-     * @expectedException Illuminate\Validation\ValidationException
-     */
     public function testInvalidationDataInStore()
     {
+        $this->expectException(ValidationException::class);
         $request = \Mockery::mock(Request::class);
         $request
             ->shouldReceive('all')
@@ -99,11 +99,9 @@ class BasicControllerTest extends TestCase
         $this->assertInstanceOf(CategoryStub::class, $result);
     }
 
-    /**
-     * @expectedException Illuminate\Database\Eloquent\ModelNotFoundException
-     */
     public function testIfFindOrFailThrowExceptionWhenIdInvalid()
     {
+        $this->expectException(ModelNotFoundException::class);
         $reflectionClass = new \ReflectionClass(BasicController::class);
         $reflectionMethod = $reflectionClass->getMethod('findOrFail');
         $reflectionMethod->setAccessible(true);

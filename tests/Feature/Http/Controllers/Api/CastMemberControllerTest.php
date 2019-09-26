@@ -38,7 +38,7 @@ class CastMemberControllerTest extends TestCase
 
         $response
             ->assertStatus(200)
-            ->assertJson($this->castMember->toArray());
+            ->assertJsonFragment($this->castMember->toArray());
     }
 
     public function testInvalidationRulePost()
