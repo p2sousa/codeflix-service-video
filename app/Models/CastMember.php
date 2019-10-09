@@ -11,6 +11,9 @@ class CastMember extends Model
     use SoftDeletes;
     use Uuid;
 
+    const TYPE_DIRECTOR = 1;
+    const TYPE_ACTOR = 2;
+
     public $incrementing = false;
     protected $fillable = ['name', 'type'];
     protected $dates = ['deleted_at'];
@@ -18,4 +21,13 @@ class CastMember extends Model
         'id' => 'string',
         'type' => 'integer'
     ];
+
+    public static function typeMembers(): array
+    {
+        return [
+            self::TYPE_DIRECTOR,
+            self::TYPE_ACTOR
+        ];
+    }
+
 }

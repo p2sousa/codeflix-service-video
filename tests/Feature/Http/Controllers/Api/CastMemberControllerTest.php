@@ -43,9 +43,10 @@ class CastMemberControllerTest extends TestCase
 
     public function testInvalidationRulePost()
     {
-        $this->assertInvalidationInStoreAction(['type' => 'a'], 'integer');
         $this->assertInvalidationInStoreAction(['type' => ''], 'required');
         $this->assertInvalidationInStoreAction(['name' => ''], 'required');
+        $this->assertInvalidationInStoreAction(['type' => 'a'], 'in');
+
         $this->assertInvalidationInStoreAction(
             ['name' => str_repeat('a', 256)],
             'max.string',
@@ -55,9 +56,9 @@ class CastMemberControllerTest extends TestCase
 
     public function testInvalidationRulePut()
     {
-        $this->assertInvalidationInStoreAction(['type' => 'a'], 'integer');
         $this->assertInvalidationInStoreAction(['type' => ''], 'required');
         $this->assertInvalidationInStoreAction(['name' => ''], 'required');
+        $this->assertInvalidationInStoreAction(['type' => 'a'], 'in');
         $this->assertInvalidationInUpdateAction(
             ['name' => str_repeat('a', 256)],
             'max.string',
@@ -70,11 +71,11 @@ class CastMemberControllerTest extends TestCase
         $response = $this->assertStore(
             [
                 'name' => 'teste',
-                'type' => 2,
+                'type' => CastMember::TYPE_ACTOR
             ],
             [
                 'name' => 'teste',
-                'type' => 2,
+                'type' => CastMember::TYPE_ACTOR,
                 'deleted_at' => null,
             ]
         );
@@ -87,11 +88,11 @@ class CastMemberControllerTest extends TestCase
         $this->assertStore(
             [
                 'name' => 'teste',
-                'type' => 1,
+                'type' => CastMember::TYPE_DIRECTOR
             ],
             [
                 'name' => 'teste',
-                'type' => 1,
+                'type' => CastMember::TYPE_DIRECTOR,
                 'deleted_at' => null,
             ]
         );
@@ -100,12 +101,12 @@ class CastMemberControllerTest extends TestCase
     public function testUpdate()
     {
         $this->castMember = factory(CastMember::class)->create([
-            'type' => 1,
+            'type' => CastMember::TYPE_DIRECTOR
         ]);
 
         $data = [
             'name' => 'teste',
-            'type' => 2,
+            'type' => CastMember::TYPE_ACTOR
         ];
 
         $response = $this->assertUpdate($data,$data + ['deleted_at' => null]);
@@ -117,9 +118,9 @@ class CastMemberControllerTest extends TestCase
 
         $data = [
             'name' => 'test',
-            'type' => '1',
+            'type' => CastMember::TYPE_DIRECTOR
         ];
-        $this->assertUpdate($data, array_merge($data, ['type' => 1]));
+        $this->assertUpdate($data, array_merge($data, ['type' => CastMember::TYPE_DIRECTOR]));
     }
 
     public function testDestroy()

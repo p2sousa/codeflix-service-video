@@ -45,14 +45,14 @@ class CastMemberTest extends TestCase
 
         $castMember = CastMember::create([
             'name' => 'test',
-            'type' => 1
+            'type' => CastMember::TYPE_DIRECTOR
         ]);
 
         $this->assertEquals(1, $castMember->type);
 
         $castMember = CastMember::create([
             'name' => 'test',
-            'type' => '2'
+            'type' => CastMember::TYPE_ACTOR
         ]);
 
         $this->assertEquals(2, $castMember->type);
@@ -62,12 +62,12 @@ class CastMemberTest extends TestCase
     {
         $castMember = factory(CastMember::class)->create([
             'name' => 'test',
-            'type' => 1,
+            'type' => CastMember::TYPE_DIRECTOR
         ])->first();
 
         $data = [
             'name' => 'test_name_updated',
-            'type' => 2
+            'type' => CastMember::TYPE_ACTOR
         ];
 
         $castMember->update($data);
