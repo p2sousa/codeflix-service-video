@@ -59,4 +59,16 @@ class CastMemberUnitTest extends TestCase
     {
         $this->assertFalse($this->castMember->incrementing);
     }
+
+    public function testTypeMembers()
+    {
+        $typeMembers = [1, 2];
+        $this->assertEquals($typeMembers, CastMember::typeMembers());
+    }
+
+    public function testTypeMembersConstants()
+    {
+        $this->assertEquals(1, CastMember::TYPE_DIRECTOR);
+        $this->assertEquals(2, CastMember::TYPE_ACTOR);
+    }
 }

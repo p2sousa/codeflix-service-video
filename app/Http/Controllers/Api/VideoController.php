@@ -8,12 +8,16 @@ class VideoController extends BasicController
 {
     private $rules;
 
-    /**
-     * VideoController constructor.
-     */
     public function __construct()
     {
-        $this->rules = [];
+        $this->rules = [
+            'title' => 'required|max:255',
+            'description' => 'required',
+            'year_launched' => 'required|date_format:Y',
+            'opened' => 'boolean',
+            'rating' => 'required|in:' . implode(',', Video::ratings()),
+            'duration' => 'required|integer',
+        ];
     }
 
     protected function model()
