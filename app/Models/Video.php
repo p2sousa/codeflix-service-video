@@ -49,4 +49,14 @@ class Video extends Model
             self::RATING_18
         ];
     }
+
+    public function categories()
+    {
+        return$this->belongsToMany(Category::class);
+    }
+
+    public function genres()
+    {
+        return$this->belongsToMany(Genre::class);
+    }
 }
