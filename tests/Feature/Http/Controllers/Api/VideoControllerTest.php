@@ -15,12 +15,20 @@ class VideoControllerTest extends TestCase
     use TestSaves;
 
     private $video;
+    private $sendData;
 
     protected function setUp(): void
     {
         parent::setUp();
 
         $this->video = factory(Video::class)->create();
+        $this->sendData = [
+            'title' => 'title',
+            'description' => 'description',
+            'year_launched' => 2010,
+            'rating' => Video::RATING_FREE,
+            'duration' => 10
+        ];
     }
 
     public function testIndex()
@@ -104,7 +112,53 @@ class VideoControllerTest extends TestCase
         $this->assertInvalidationInStoreAction($data,'in');
         $this->assertInvalidationInUpdateAction($data,'in');
     }
-    
+
+    public function testStore()
+    {
+        $response = $this->assertStore(
+            $this->sendData,
+            $this->sendData + ['opened' => false]
+        );
+
+        $response->assertJsonStructure([
+            'created_at',
+            'updated_at'
+        ]);
+
+        $this->assertStore(
+            $this->sendData + ['opened' => true],
+            $this->sendData + ['opened' => true]
+        );
+
+        $this->assertStore(
+            $this->sendData + ['rating' => Video::RATING_18],
+            $this->sendData + ['rating' => Video::RATING_18]
+        );
+    }
+
+    public function testUpdate()
+    {
+        $response = $this->assertUpdate(
+            $this->sendData,
+            $this->sendData + ['opened' => false]
+        );
+
+        $response->assertJsonStructure([
+            'created_at',
+            'updated_at'
+        ]);
+
+        $this->assertUpdate(
+            $this->sendData + ['opened' => true],
+            $this->sendData + ['opened' => true]
+        );
+
+        $this->assertUpdate(
+            $this->sendData + ['rating' => Video::RATING_18],
+            $this->sendData + ['rating' => Video::RATING_18]
+        );
+    }
+
     public function testDestroy()
     {
         $response = $this->json('DELETE', route('videos.destroy', ['video' => $this->video->id]));
