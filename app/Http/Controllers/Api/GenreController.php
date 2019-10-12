@@ -7,6 +7,17 @@ use Illuminate\Http\Request;
 
 class GenreController extends BasicController
 {
+    private $rules;
+
+    public function __construct()
+    {
+        $this->rules = [
+            'name' => 'required|max:255',
+            'is_active' => 'boolean',
+            'categories_id' => 'required|array|exists:categories,id',
+        ];
+    }
+
     protected function model()
     {
         return Genre::class;
@@ -14,17 +25,47 @@ class GenreController extends BasicController
 
     protected function rulesStore()
     {
-        return [
-            'name' => 'required|max:255',
-            'is_active' => 'boolean'
-        ];
+        return $this->rules;
     }
 
     protected function rulesUpdate()
     {
-        return [
-            'name' => 'required|max:255',
-            'is_active' => 'boolean'
-        ];
+        return $this->rules;
+    }
+
+    public function store(Request $request)
+    {
+        $validateData = $this->validate($request, $this->rulesStore());
+
+        $self = $this;
+        $genre = \DB::transaction(function() use($request, $validateData, $self) {
+            $genre = $this->model()::create($validateData);
+            $self->handleRelations($genre, $request);
+            return $genre;
+        });
+
+        $genre->refresh();
+        return $genre;
+    }
+
+    public function update(Request $request, $id)
+    {
+        $validation = $this->validate($request, $this->rulesUpdate());
+        $genre = $this->findOrFail($id);
+
+        $self = $this;
+        $genre = \DB::transaction(function() use($request, $validation, $self, $genre) {
+            $genre->update($validation);
+            $self->handleRelations($genre, $request);
+            return $genre;
+        });
+
+        $genre->refresh();
+        return $genre;
+    }
+
+    protected function handleRelations($genre, Request $request)
+    {
+        $genre->categories()->sync($request->get('categories_id'));
     }
 }

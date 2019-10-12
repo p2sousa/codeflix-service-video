@@ -102,7 +102,7 @@ class VideoControllerTest extends TestCase
         $this->assertInvalidationInUpdateAction($data,'array');
     }
 
-    public function testInvalidationExistisRule()
+    public function testInvalidationExistsRule()
     {
         $data = [
             'categories_id' => [100],
