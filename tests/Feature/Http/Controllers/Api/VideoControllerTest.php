@@ -2,8 +2,13 @@
 
 namespace Tests\Feature\Http\Controllers\Api;
 
+use App\Http\Controllers\Api\VideoController;
+use App\Models\Category;
+use App\Models\Genre;
 use App\Models\Video;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
+use Illuminate\Http\Request;
+use Tests\Exceptions\TestException;
 use Tests\TestCase;
 use Tests\Traits\TestSaves;
 use Tests\Traits\TestValidations;
@@ -21,13 +26,14 @@ class VideoControllerTest extends TestCase
     {
         parent::setUp();
 
-        $this->video = factory(Video::class)->create();
+        $this->video = factory(Video::class)->create(['opened' => false]);
+
         $this->sendData = [
             'title' => 'title',
             'description' => 'description',
             'year_launched' => 2010,
             'rating' => Video::RATING_FREE,
-            'duration' => 10
+            'duration' => 10,
         ];
     }
 
@@ -57,6 +63,8 @@ class VideoControllerTest extends TestCase
             'year_launched' => '',
             'rating' => '',
             'duration' => '',
+            'categories_id' => '',
+            'genres_id' => '',
         ];
 
         $this->assertInvalidationInStoreAction($data,'required');
@@ -81,6 +89,28 @@ class VideoControllerTest extends TestCase
 
         $this->assertInvalidationInStoreAction($data,'integer');
         $this->assertInvalidationInUpdateAction($data,'integer');
+    }
+
+    public function testInvalidationArrayRule()
+    {
+        $data = [
+            'categories_id' => 'a',
+            'genres_id' => 'a',
+        ];
+
+        $this->assertInvalidationInStoreAction($data,'array');
+        $this->assertInvalidationInUpdateAction($data,'array');
+    }
+
+    public function testInvalidationExistisRule()
+    {
+        $data = [
+            'categories_id' => [100],
+            'genres_id' => [100],
+        ];
+
+        $this->assertInvalidationInStoreAction($data,'exists');
+        $this->assertInvalidationInUpdateAction($data,'exists');
     }
 
     public function testInvalidationYearLaunchedField()
@@ -113,50 +143,141 @@ class VideoControllerTest extends TestCase
         $this->assertInvalidationInUpdateAction($data,'in');
     }
 
-    public function testStore()
+    public function testSave()
     {
-        $response = $this->assertStore(
-            $this->sendData,
-            $this->sendData + ['opened' => false]
-        );
+        $category = factory(Category::class)->create();
+        $genre = factory(Genre::class)->create();
 
-        $response->assertJsonStructure([
-            'created_at',
-            'updated_at'
-        ]);
+        $relations = [
+            'categories_id' => [$category->id],
+            'genres_id' => [$genre->id]
+        ];
 
-        $this->assertStore(
-            $this->sendData + ['opened' => true],
-            $this->sendData + ['opened' => true]
-        );
+        $data = [
+            [
+                'send_data' => $this->sendData + $relations,
+                'test_data' => $this->sendData + ['opened' => false]
+            ],
+            [
+                'send_data' => $this->sendData + ['opened' => true] + $relations ,
+                'test_data' => $this->sendData + ['opened' => true]
+            ],
+            [
+                'send_data' => $this->sendData + ['rating' => Video::RATING_18] + $relations,
+                'test_data' => $this->sendData + ['rating' => Video::RATING_18]
+            ]
+        ];
 
-        $this->assertStore(
-            $this->sendData + ['rating' => Video::RATING_18],
-            $this->sendData + ['rating' => Video::RATING_18]
-        );
+        foreach ($data as $key => $value){
+            $response = $this->assertStore(
+                $value['send_data'],
+                $value['test_data'] + ['deleted_at' => null]
+            );
+
+            $response->assertJsonStructure([
+                'created_at', 'updated_at'
+            ]);
+
+            $this->assertIfHasCategory(
+                $response->json('id'),
+                $value['send_data']['categories_id'][0]
+            );
+
+            $this->assertIfHasGenre(
+                $response->json('id'),
+                $value['send_data']['genres_id'][0]
+            );
+
+            $response = $this->assertUpdate(
+                $value['send_data'],
+                $value['test_data'] + ['deleted_at' => null]
+            );
+
+            $response->assertJsonStructure([
+                'created_at', 'updated_at'
+            ]);
+
+            $this->assertIfHasCategory(
+                $response->json('id'),
+                $value['send_data']['categories_id'][0]
+            );
+
+            $this->assertIfHasGenre(
+                $response->json('id'),
+                $value['send_data']['genres_id'][0]
+            );
+        }
     }
 
-    public function testUpdate()
+    public function testRollBackStore()
     {
-        $response = $this->assertUpdate(
-            $this->sendData,
-            $this->sendData + ['opened' => false]
-        );
+        $controller = \Mockery::mock(VideoController::class)
+            ->makePartial()
+            ->shouldAllowMockingProtectedMethods();
 
-        $response->assertJsonStructure([
-            'created_at',
-            'updated_at'
-        ]);
+        $controller->shouldReceive('validate')
+            ->withAnyArgs()
+            ->andReturn($this->sendData);
 
-        $this->assertUpdate(
-            $this->sendData + ['opened' => true],
-            $this->sendData + ['opened' => true]
-        );
+        $controller->shouldReceive('rulesStore')
+            ->withAnyArgs()
+            ->andReturn([]);
 
-        $this->assertUpdate(
-            $this->sendData + ['rating' => Video::RATING_18],
-            $this->sendData + ['rating' => Video::RATING_18]
-        );
+        $request = \Mockery::mock(Request::class);
+        $request->shouldReceive('get')
+            ->withAnyArgs()
+            ->andReturn([]);
+
+        $controller->shouldReceive('handleRelations')
+            ->once()
+            ->andThrow(new TestException());
+
+        $hasError = false;
+        try {
+            $controller->store($request);
+        } catch (TestException $exception) {
+            $this->assertCount(1, Video::all());
+            $hasError = true;
+        }
+
+        $this->assertTrue($hasError);
+    }
+
+    public function testRollBackUpdate()
+    {
+        $controller = \Mockery::mock(VideoController::class)
+            ->makePartial()
+            ->shouldAllowMockingProtectedMethods();
+
+        $controller->shouldReceive('validate')
+            ->withAnyArgs()
+            ->andReturn($this->sendData);
+
+        $controller->shouldReceive('rulesUpdate')
+            ->withAnyArgs()
+            ->andReturn([]);
+
+        $controller->shouldReceive('findOrFail')
+            ->withAnyArgs()
+            ->andReturn($this->video);
+
+        $request = \Mockery::mock(Request::class);
+        $request->shouldReceive('get')
+            ->withAnyArgs()
+            ->andReturn([]);
+
+        $controller->shouldReceive('handleRelations')
+            ->once()
+            ->andThrow(new TestException());
+
+        $hasError = false;
+        try {
+            $controller->update($request, 1);
+        } catch (TestException $exception) {
+            $this->assertCount(1, Video::all());
+            $hasError = true;
+        }
+        $this->assertTrue($hasError);
     }
 
     public function testDestroy()
@@ -167,6 +288,26 @@ class VideoControllerTest extends TestCase
             ->assertStatus(204);
 
         $this->assertEmpty($response->getContent());
+    }
+
+    protected function assertIfHasCategory($videoId, $categoryId)
+    {
+        $this->assertDatabaseHas('category_video',
+            [
+                'category_id' => $categoryId,
+                'video_id' => $videoId
+            ]
+        );
+    }
+
+    protected function assertIfHasGenre($videoId, $genreId)
+    {
+        $this->assertDatabaseHas('genre_video',
+            [
+                'genre_id' => $genreId,
+                'video_id' => $videoId
+            ]
+        );
     }
 
     protected function model()
