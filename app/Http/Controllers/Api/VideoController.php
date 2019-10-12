@@ -2,49 +2,29 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Http\Controllers\Controller;
+use App\Http\Requests\VideoRequest;
 use App\Models\Video;
-use Illuminate\Http\Request;
 
-class VideoController extends BasicController
+class VideoController extends Controller
 {
-    private $rules;
-
-    public function __construct()
+    public function index()
     {
-        $this->rules = [
-            'title' => 'required|max:255',
-            'description' => 'required',
-            'year_launched' => 'required|date_format:Y',
-            'opened' => 'boolean',
-            'rating' => 'required|in:' . implode(',', Video::ratings()),
-            'duration' => 'required|integer',
-            'categories_id' => 'required|array|exists:categories,id',
-            'genres_id' => 'required|array|exists:genres,id'
-        ];
+        return Video::all();
     }
 
-    protected function model()
+    public function show(Video $video)
     {
-        return Video::class;
+        return $video;
     }
 
-    protected function rulesStore()
+    public function store(VideoRequest $request)
     {
-        return $this->rules;
-    }
-
-    protected function rulesUpdate()
-    {
-        return $this->rules;
-    }
-
-    public function store(Request $request)
-    {
-        $validateData = $this->validate($request, $this->rulesStore());
+        $validateData = $request->validated();
 
         $self = $this;
         $video = \DB::transaction(function() use($request, $validateData, $self) {
-            $video = $this->model()::create($validateData);
+            $video = Video::create($validateData);
             $self->handleRelations($video, $request);
             return $video;
         });
@@ -53,10 +33,9 @@ class VideoController extends BasicController
         return $video;
     }
 
-    public function update(Request $request, $id)
+    public function update(VideoRequest $request, Video $video)
     {
-        $validation = $this->validate($request, $this->rulesUpdate());
-        $video = $this->findOrFail($id);
+        $validation = $request->validated();
 
         $self = $this;
         $video = \DB::transaction(function() use($request, $validation, $self, $video) {
@@ -69,7 +48,13 @@ class VideoController extends BasicController
         return $video;
     }
 
-    protected function handleRelations($video, Request $request)
+    public function destroy(Video $video)
+    {
+        $video->delete();
+        return response()->noContent();
+    }
+
+    protected function handleRelations($video, VideoRequest $request)
     {
         $video->categories()->sync($request->get('categories_id'));
         $video->genres()->sync($request->get('genres_id'));

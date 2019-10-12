@@ -3,6 +3,7 @@
 namespace Tests\Feature\Http\Controllers\Api;
 
 use App\Http\Controllers\Api\VideoController;
+use App\Http\Requests\VideoRequest;
 use App\Models\Category;
 use App\Models\Genre;
 use App\Models\Video;
@@ -147,6 +148,7 @@ class VideoControllerTest extends TestCase
     {
         $category = factory(Category::class)->create();
         $genre = factory(Genre::class)->create();
+        $genre->categories()->sync([$category->id]);
 
         $relations = [
             'categories_id' => [$category->id],
@@ -215,18 +217,10 @@ class VideoControllerTest extends TestCase
             ->makePartial()
             ->shouldAllowMockingProtectedMethods();
 
-        $controller->shouldReceive('validate')
+        $request = \Mockery::mock(VideoRequest::class);
+        $request->shouldReceive('validated')
             ->withAnyArgs()
             ->andReturn($this->sendData);
-
-        $controller->shouldReceive('rulesStore')
-            ->withAnyArgs()
-            ->andReturn([]);
-
-        $request = \Mockery::mock(Request::class);
-        $request->shouldReceive('get')
-            ->withAnyArgs()
-            ->andReturn([]);
 
         $controller->shouldReceive('handleRelations')
             ->once()
@@ -249,22 +243,10 @@ class VideoControllerTest extends TestCase
             ->makePartial()
             ->shouldAllowMockingProtectedMethods();
 
-        $controller->shouldReceive('validate')
+        $request = \Mockery::mock(VideoRequest::class);
+        $request->shouldReceive('validated')
             ->withAnyArgs()
             ->andReturn($this->sendData);
-
-        $controller->shouldReceive('rulesUpdate')
-            ->withAnyArgs()
-            ->andReturn([]);
-
-        $controller->shouldReceive('findOrFail')
-            ->withAnyArgs()
-            ->andReturn($this->video);
-
-        $request = \Mockery::mock(Request::class);
-        $request->shouldReceive('get')
-            ->withAnyArgs()
-            ->andReturn([]);
 
         $controller->shouldReceive('handleRelations')
             ->once()
@@ -272,7 +254,7 @@ class VideoControllerTest extends TestCase
 
         $hasError = false;
         try {
-            $controller->update($request, 1);
+            $controller->update($request, $this->video);
         } catch (TestException $exception) {
             $this->assertCount(1, Video::all());
             $hasError = true;
