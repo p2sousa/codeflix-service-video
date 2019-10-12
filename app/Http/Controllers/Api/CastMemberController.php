@@ -6,6 +6,19 @@ use App\Models\CastMember;
 
 class CastMemberController extends BasicController
 {
+    private $rules;
+
+    /**
+     * CastMemberController constructor.
+     */
+    public function __construct()
+    {
+        $this->rules = [
+            'name' => 'required|max:255',
+            'type' => 'required|in:' . implode(',', CastMember::typeMembers())
+        ];
+    }
+
     protected function model()
     {
         return CastMember::class;
@@ -13,18 +26,12 @@ class CastMemberController extends BasicController
 
     protected function rulesStore()
     {
-        return [
-            'name' => 'required|max:255',
-            'type' => 'required|integer'
-        ];
+        return $this->rules;
     }
 
     protected function rulesUpdate()
     {
-        return [
-            'name' => 'required|max:255',
-            'type' => 'required|integer'
-        ];
+        return $this->rules;
     }
 
 }

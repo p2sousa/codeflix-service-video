@@ -29,6 +29,7 @@ abstract class BasicController extends Controller
         $validation = $this->validate($request, $this->rulesUpdate());
         $obj = $this->findOrFail($id);
         $obj->update($validation);
+        $obj->refresh();
         return $obj;
     }
 

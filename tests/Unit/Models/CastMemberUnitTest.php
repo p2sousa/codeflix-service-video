@@ -7,7 +7,7 @@ use App\Models\Traits\Uuid;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Tests\TestCase;
 
-class CastMemberTest extends TestCase
+class CastMemberUnitTest extends TestCase
 {
     private $castMember;
 
@@ -58,5 +58,17 @@ class CastMemberTest extends TestCase
     public function testIncrementingProperty()
     {
         $this->assertFalse($this->castMember->incrementing);
+    }
+
+    public function testTypeMembers()
+    {
+        $typeMembers = [1, 2];
+        $this->assertEquals($typeMembers, CastMember::typeMembers());
+    }
+
+    public function testTypeMembersConstants()
+    {
+        $this->assertEquals(1, CastMember::TYPE_DIRECTOR);
+        $this->assertEquals(2, CastMember::TYPE_ACTOR);
     }
 }

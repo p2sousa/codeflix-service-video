@@ -6,8 +6,9 @@ use App\Model;
 use Faker\Generator as Faker;
 
 $factory->define(\App\Models\CastMember::class, function (Faker $faker) {
+    $types = \App\Models\CastMember::typeMembers();
     return [
         'name' => $faker->firstName,
-        'type' => rand(1,2)
+        'type' => $types[array_rand($types)]
     ];
 });
