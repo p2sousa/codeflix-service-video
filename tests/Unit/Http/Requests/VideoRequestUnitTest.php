@@ -36,10 +36,10 @@ class VideoRequestUnitTest extends TestCase
             'categories_id' => [
                 'required',
                 'array',
-                'exists:categories,id',
+                'exists:categories,id,deleted_at,NULL',
                 new CategoryHasGenreRule('')
             ],
-            'genres_id' => 'required|array|exists:genres,id'
+            'genres_id' => 'required|array|exists:genres,id,deleted_at,NULL'
         ];
 
         $this->assertEquals($rules, $this->videoRequest->rules());
