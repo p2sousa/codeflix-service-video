@@ -55,6 +55,7 @@ class Video extends Model
         try {
             \DB::beginTransaction();
             $obj = static::query()->create($attributes);
+            static::handleRelations($obj, $attributes);
             // todo implementar uploads após criação do objeto
             \DB::commit();
 
@@ -73,6 +74,7 @@ class Video extends Model
         try {
             \DB::beginTransaction();
             $saved = parent::update($attributes, $options);
+            static::handleRelations($this, $attributes);
             if ($saved) {
                 // todo implementar upload de novos arquivos após edição do objeto
                 // todo implementar excluir arquivos antigos
@@ -84,6 +86,17 @@ class Video extends Model
             // todo implementar loggica de delete de arquivos, caso tenha dado algum erro.
             \DB::rollBack();
             throw $e;
+        }
+    }
+
+    public static function handleRelations(Video $video, array $attributes)
+    {
+        if (isset($attributes['categories_id'])) {
+            $video->categories()->sync($attributes['categories_id']);
+        }
+
+        if (isset($attributes['genres_id'])) {
+            $video->genres()->sync($attributes['genres_id']);
         }
     }
 
