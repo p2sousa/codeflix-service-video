@@ -90,6 +90,6 @@ class CategoryHasGenreRule implements Rule
      */
     public function message()
     {
-        return 'A category must be related at least a genre.';
+        return trans('categories_has_genres');
     }
 }

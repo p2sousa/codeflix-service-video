@@ -35,10 +35,10 @@ class VideoRequest extends FormRequest
             'categories_id' => [
                 'required',
                 'array',
-                'exists:categories,id',
+                'exists:categories,id,deleted_at,NULL',
                 new CategoryHasGenreRule($this->request->get('genres_id'))
             ],
-            'genres_id' => 'required|array|exists:genres,id'
+            'genres_id' => 'required|array|exists:genres,id,deleted_at,NULL'
         ];
     }
 }
