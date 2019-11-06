@@ -50,6 +50,44 @@ class Video extends Model
         ];
     }
 
+    public static function create(array $attributes = [])
+    {
+        try {
+            \DB::beginTransaction();
+            $obj = static::query()->create($attributes);
+            // todo implementar uploads após criação do objeto
+            \DB::commit();
+
+            return $obj;
+        } catch (\Exception $e) {
+            if (isset($obj)) {
+                // todo implementar loggica de delete de arquivos, caso tenha dado algum erro.
+            }
+            \DB::rollBack();
+            throw $e;
+        }
+    }
+
+    public function update(array $attributes = [], array $options = [])
+    {
+        try {
+            \DB::beginTransaction();
+            $saved = parent::update($attributes, $options);
+            if ($saved) {
+                // todo implementar upload de novos arquivos após edição do objeto
+                // todo implementar excluir arquivos antigos
+            }
+            \DB::commit();
+
+            return $saved;
+        } catch (\Exception $e) {
+            // todo implementar loggica de delete de arquivos, caso tenha dado algum erro.
+            \DB::rollBack();
+            throw $e;
+        }
+    }
+
+
     public function categories()
     {
         return$this->belongsToMany(Category::class)->withTrashed();
