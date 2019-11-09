@@ -29,6 +29,7 @@ class Video extends Model
         'opened',
         'rating',
         'duration',
+        'video_file'
     ];
 
     protected $dates = ['deleted_at'];
@@ -39,8 +40,6 @@ class Video extends Model
         'year_launched' => 'integer',
         'duration' => 'integer',
     ];
-
-    protected static $fileFields = ['filme', 'banner', 'trailler'];
 
     public static function ratings(): array
     {
@@ -116,10 +115,13 @@ class Video extends Model
         return$this->belongsToMany(Genre::class)->withTrashed();
     }
 
+    public static function fileFields(): array
+    {
+        return ['video_file'];
+    }
+
     protected function uploadDirectory()
     {
         return $this->id;
     }
-
-
 }

@@ -6,6 +6,7 @@ use App\Models\Category;
 use App\Models\Genre;
 use App\Models\Video;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
+use Illuminate\Http\UploadedFile;
 use Tests\TestCase;
 use Tests\Traits\TestSaves;
 use Tests\Traits\TestValidations;
@@ -71,11 +72,45 @@ class VideoControllerTest extends TestCase
     public function testInvalidationMaxRule()
     {
         $data = [
-            'title' => str_repeat('a', 256)
+            'title' => str_repeat('a', 256),
         ];
 
         $this->assertInvalidationInStoreAction($data,'max.string', ['max' => 255]);
         $this->assertInvalidationInUpdateAction($data,'max.string', ['max' => 255]);
+    }
+
+    public function testInvalidationFilledRule()
+    {
+        $data = [
+            'video_file' => ''
+        ];
+
+        $this->assertInvalidationInStoreAction($data,'filled');
+    }
+
+    public function testInvalidationMaxFileSizeRule()
+    {
+        $file = UploadedFile::fake()
+            ->create('video1.mp4')
+            ->size(100001);
+
+        $data = [
+            'video_file' => $file
+        ];
+
+        $this->assertInvalidationInStoreAction($data,'max.file', ['max' => 100000]);
+    }
+
+    public function testInvalidationFileMimeTypeRule()
+    {
+        $file = UploadedFile::fake()
+            ->create('video1.pdf');
+
+        $data = [
+            'video_file' => $file
+        ];
+
+        $this->assertInvalidationInStoreAction($data,'mimetypes', ['values' => 'video/mp4']);
     }
 
     public function testInvalidationIntegerRule()
@@ -174,7 +209,7 @@ class VideoControllerTest extends TestCase
                 'test_data' => $this->sendData + ['opened' => false]
             ],
             [
-                'send_data' => $this->sendData + ['opened' => true] + $relations ,
+                'send_data' => $this->sendData + ['opened' => true] + $relations,
                 'test_data' => $this->sendData + ['opened' => true]
             ],
             [

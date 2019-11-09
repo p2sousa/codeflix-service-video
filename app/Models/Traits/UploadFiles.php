@@ -7,6 +7,7 @@ use Illuminate\Http\UploadedFile;
 
 trait UploadFiles
 {
+    public static abstract function fileFields(): array;
     protected abstract function uploadDirectory();
 
     /**
@@ -49,7 +50,7 @@ trait UploadFiles
     public static function extractFiles(array &$attributes = [])
     {
         $files = [];
-        foreach (self::$fileFields as $file) {
+        foreach (self::fileFields() as $file) {
             if (isset($attributes[$file]) && $attributes[$file] instanceof UploadedFile) {
                 $files[] = $attributes[$file];
                 $attributes[$file] = $attributes[$file]->hashName();

@@ -39,7 +39,8 @@ class VideoRequestUnitTest extends TestCase
                 'exists:categories,id,deleted_at,NULL',
                 new CategoryHasGenreRule('')
             ],
-            'genres_id' => 'required|array|exists:genres,id,deleted_at,NULL'
+            'genres_id' => 'required|array|exists:genres,id,deleted_at,NULL',
+            'video_file' => 'filled|mimetypes:video/mp4|max:100000'
         ];
 
         $this->assertEquals($rules, $this->videoRequest->rules());

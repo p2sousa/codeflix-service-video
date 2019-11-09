@@ -7,6 +7,7 @@ use App\Models\Genre;
 use App\Models\Video;
 use Illuminate\Database\QueryException;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
+use Illuminate\Http\UploadedFile;
 use Tests\TestCase;
 use Tests\Traits\TestUuid;
 
@@ -45,6 +46,7 @@ class VideoTest extends TestCase
                 'opened',
                 'rating',
                 'duration',
+                'video_file',
                 'created_at',
                 'updated_at',
                 'deleted_at',
@@ -86,6 +88,21 @@ class VideoTest extends TestCase
 
         $this->assertHasCategory($video->id, $category->id);
         $this->assertHasGenre($video->id, $genre->id);
+    }
+
+    public function testCreateWithUpload()
+    {
+        $file = UploadedFile::fake()
+            ->create('video1.mp4')
+            ->size(5000);
+
+        $video = Video::create($this->data + [
+                'video_file' => $file,
+            ]);
+        $video->refresh();
+
+        $this->assertEquals($video->video_file, $file->hashName());
+        \Storage::assertExists("{$video->id}/{$video->video_filename}");
     }
 
     public function testUpdateWithBasicFields()

@@ -10,7 +10,10 @@ class UploadFilesStub extends Model
 {
     use UploadFiles;
 
-    protected static $fileFields = ['file1', 'file2'];
+    public static function fileFields(): array
+    {
+        return ['file1', 'file2'];
+    }
 
     protected function uploadDirectory()
     {
