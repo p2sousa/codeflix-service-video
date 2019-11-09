@@ -92,6 +92,7 @@ class VideoTest extends TestCase
 
     public function testCreateWithUpload()
     {
+        \Storage::fake();
         $file = UploadedFile::fake()
             ->create('video1.mp4')
             ->size(5000);
