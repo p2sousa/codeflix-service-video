@@ -15,7 +15,7 @@ services:
       - _DB_PASSWORD=root
       - _TEST_DB_DATABASE=codeflix_videos_test
     volumes:
-      - .:/var/www:rw,cached
+      - .:/var/www
       - ./.docker/php/log:/var/log:rw,cached
     depends_on:
       - db

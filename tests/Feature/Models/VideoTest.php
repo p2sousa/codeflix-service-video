@@ -265,4 +265,20 @@ class VideoTest extends TestCase
             'video_id' => $video->id
         ]);
     }
+
+    private function assertHasCategory($video_id, $cagegory_id)
+    {
+        $this->assertDatabaseHas('category_video', [
+            'video_id' => $video_id,
+            'category_id' => $cagegory_id
+        ]);
+    }
+
+    private function assertHasGenre($video_id, $genre_id)
+    {
+        $this->assertDatabaseHas('genre_video', [
+            'video_id' => $video_id,
+            'genre_id' => $genre_id
+        ]);
+    }
 }
