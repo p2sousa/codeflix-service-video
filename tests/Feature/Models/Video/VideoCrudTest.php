@@ -1,35 +1,16 @@
 <?php
 
-namespace Tests\Feature\Models;
+namespace Tests\Feature\Models\Video;
 
 use App\Models\Category;
 use App\Models\Genre;
 use App\Models\Video;
 use Illuminate\Database\QueryException;
-use Illuminate\Foundation\Testing\DatabaseMigrations;
-use Illuminate\Http\UploadedFile;
-use Tests\TestCase;
 use Tests\Traits\TestUuid;
 
-class VideoTest extends TestCase
+class VideoTest extends BaseVideoTest
 {
-    use DatabaseMigrations;
     use TestUuid;
-
-    private $data;
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-
-        $this->data = [
-            'title' => 'title',
-            'description' => 'description',
-            'year_launched' => 2010,
-            'rating' => Video::RATING_FREE,
-            'duration' => 10,
-        ];
-    }
 
     public function testList()
     {
@@ -90,21 +71,6 @@ class VideoTest extends TestCase
         $this->assertHasGenre($video->id, $genre->id);
     }
 
-    public function testCreateWithUpload()
-    {
-        \Storage::fake();
-        $file = UploadedFile::fake()
-            ->create('video1.mp4')
-            ->size(5000);
-
-        $video = Video::create($this->data + [
-                'video_file' => $file,
-            ]);
-        $video->refresh();
-
-        $this->assertEquals($video->video_file, $file->hashName());
-        \Storage::assertExists("{$video->id}/{$video->video_filename}");
-    }
 
     public function testUpdateWithBasicFields()
     {

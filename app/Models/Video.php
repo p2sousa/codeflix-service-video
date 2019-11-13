@@ -29,7 +29,8 @@ class Video extends Model
         'opened',
         'rating',
         'duration',
-        'video_file'
+        'video_file',
+        'thumb_file'
     ];
 
     protected $dates = ['deleted_at'];
@@ -68,6 +69,7 @@ class Video extends Model
         } catch (\Exception $e) {
             if (isset($obj)) {
                 // todo implementar loggica de delete de arquivos, caso tenha dado algum erro.
+                $obj->deleteFiles($files);
             }
             \DB::rollBack();
             throw $e;
@@ -117,7 +119,7 @@ class Video extends Model
 
     public static function fileFields(): array
     {
-        return ['video_file'];
+        return ['video_file', 'thumb_file'];
     }
 
     protected function uploadDirectory()
