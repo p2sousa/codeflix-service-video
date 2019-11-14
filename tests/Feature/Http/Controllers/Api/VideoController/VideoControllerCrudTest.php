@@ -1,39 +1,17 @@
 <?php
 
-namespace Tests\Feature\Http\Controllers\Api;
+namespace Tests\Feature\Http\Controllers\Api\VideoController;
 
 use App\Models\Category;
 use App\Models\Genre;
 use App\Models\Video;
-use Illuminate\Foundation\Testing\DatabaseMigrations;
-use Illuminate\Http\UploadedFile;
-use Tests\TestCase;
 use Tests\Traits\TestSaves;
 use Tests\Traits\TestValidations;
 
-class VideoControllerTest extends TestCase
+class VideoControllerCrudTest extends BaseVideoControllerTest
 {
-    use DatabaseMigrations;
     use TestValidations;
     use TestSaves;
-
-    private $video;
-    private $sendData;
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-
-        $this->video = factory(Video::class)->create(['opened' => false]);
-
-        $this->sendData = [
-            'title' => 'title',
-            'description' => 'description',
-            'year_launched' => 2010,
-            'rating' => Video::RATING_FREE,
-            'duration' => 10,
-        ];
-    }
 
     public function testIndex()
     {
@@ -77,40 +55,6 @@ class VideoControllerTest extends TestCase
 
         $this->assertInvalidationInStoreAction($data,'max.string', ['max' => 255]);
         $this->assertInvalidationInUpdateAction($data,'max.string', ['max' => 255]);
-    }
-
-    public function testInvalidationFilledRule()
-    {
-        $data = [
-            'video_file' => ''
-        ];
-
-        $this->assertInvalidationInStoreAction($data,'filled');
-    }
-
-    public function testInvalidationMaxFileSizeRule()
-    {
-        $file = UploadedFile::fake()
-            ->create('video1.mp4')
-            ->size(100001);
-
-        $data = [
-            'video_file' => $file
-        ];
-
-        $this->assertInvalidationInStoreAction($data,'max.file', ['max' => 100000]);
-    }
-
-    public function testInvalidationFileMimeTypeRule()
-    {
-        $file = UploadedFile::fake()
-            ->create('video1.pdf');
-
-        $data = [
-            'video_file' => $file
-        ];
-
-        $this->assertInvalidationInStoreAction($data,'mimetypes', ['values' => 'video/mp4']);
     }
 
     public function testInvalidationIntegerRule()
@@ -192,7 +136,7 @@ class VideoControllerTest extends TestCase
         $this->assertInvalidationInUpdateAction($data,'in');
     }
 
-    public function testSave()
+    public function testSaveWithoutFiles()
     {
         $category = factory(Category::class)->create();
         $genre = factory(Genre::class)->create();
@@ -287,20 +231,5 @@ class VideoControllerTest extends TestCase
                 'video_id' => $videoId
             ]
         );
-    }
-
-    protected function model()
-    {
-        return Video::class;
-    }
-
-    protected function routeStore()
-    {
-        return route('videos.store');
-    }
-
-    protected function routeUpdate()
-    {
-        return route('videos.update', ['video' => $this->video->id]);
     }
 }
