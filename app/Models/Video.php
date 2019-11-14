@@ -68,7 +68,6 @@ class Video extends Model
             return $obj;
         } catch (\Exception $e) {
             if (isset($obj)) {
-                // todo implementar loggica de delete de arquivos, caso tenha dado algum erro.
                 $obj->deleteFiles($files);
             }
             \DB::rollBack();
@@ -78,19 +77,23 @@ class Video extends Model
 
     public function update(array $attributes = [], array $options = [])
     {
+        $files = self::extractFiles($attributes);
         try {
             \DB::beginTransaction();
             $saved = parent::update($attributes, $options);
             static::handleRelations($this, $attributes);
             if ($saved) {
-                // todo implementar upload de novos arquivos após edição do objeto
-                // todo implementar excluir arquivos antigos
+                $this->uploadFiles($files);
             }
             \DB::commit();
 
+            if ($saved && count($files)) {
+                $this->deleteOldFiles();
+            }
+
             return $saved;
         } catch (\Exception $e) {
-            // todo implementar loggica de delete de arquivos, caso tenha dado algum erro.
+            $this->deleteFiles($files);
             \DB::rollBack();
             throw $e;
         }

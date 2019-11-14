@@ -15,6 +15,7 @@ class VideoControllerUploadTest extends BaseVideoControllerTest
     {
         $data = [
             'video_file' => '',
+            'thumb_file' => '',
         ];
 
         $this->assertInvalidationInStoreAction($data,'filled');
@@ -22,15 +23,23 @@ class VideoControllerUploadTest extends BaseVideoControllerTest
 
     public function testInvalidationMaxFileSizeRule()
     {
-        $file = UploadedFile::fake()
+        $fileVideo = UploadedFile::fake()
             ->create('video1.mp4')
             ->size(100001);
 
-        $data = [
-            'video_file' => $file
+        $videos = [
+            'video_file' => $fileVideo
         ];
+        $this->assertInvalidationInStoreAction($videos,'max.file', ['max' => 100000]);
 
-        $this->assertInvalidationInStoreAction($data,'max.file', ['max' => 100000]);
+        $fileImage = UploadedFile::fake()
+            ->image('thumb.png')
+            ->size(10001);
+
+        $images = [
+            'thumb_file' => $fileImage
+        ];
+        $this->assertInvalidationInStoreAction($images,'max.file', ['max' => 10000]);
     }
 
     public function testInvalidationFileMimeTypeRule()
@@ -43,6 +52,15 @@ class VideoControllerUploadTest extends BaseVideoControllerTest
         ];
 
         $this->assertInvalidationInStoreAction($data,'mimetypes', ['values' => 'video/mp4']);
+
+        $fileImage = UploadedFile::fake()
+            ->create('thumb.mp4');
+
+        $images = [
+            'thumb_file' => $fileImage
+        ];
+
+        $this->assertInvalidationInStoreAction($images,'mimetypes', ['values' => 'image/jpeg, image/png']);
     }
 
     public function testStoreWithFiles()
@@ -104,8 +122,12 @@ class VideoControllerUploadTest extends BaseVideoControllerTest
         $videofile = UploadedFile::fake()
             ->create('video1.mp4');
 
+        $thumbfile = UploadedFile::fake()
+            ->image('thumb.jpg');
+
         return [
-            'video_file' => $videofile
+            'video_file' => $videofile,
+            'thumb_file' => $thumbfile,
         ];
     }
 }
