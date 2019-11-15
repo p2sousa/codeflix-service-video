@@ -84,4 +84,15 @@ trait UploadFiles
 
         return $files;
     }
+
+    public function getFileUrl($file)
+    {
+        $path = "{$this->id}/{$file}";
+
+        if (\Storage::exists($path)){
+            return \Storage::url($path);
+        }
+
+        return null;
+    }
 }
