@@ -20,8 +20,6 @@ class UploadFilesTest extends TestCase
         UploadFilesStub::makeTable();
     }
 
-
-
     public function testMakeOldFieldsOnSaving()
     {
         $this->obj->fill([

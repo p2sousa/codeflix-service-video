@@ -39,8 +39,10 @@ class VideoRequest extends FormRequest
                 new CategoryHasGenreRule($this->request->get('genres_id'))
             ],
             'genres_id' => 'required|array|exists:genres,id,deleted_at,NULL',
-            'video_file' => 'filled|mimetypes:video/mp4|max:100000',
-            'thumb_file' => 'filled|mimetypes:image/jpeg,image/png|max:10000'
+            'video_file' => 'filled|mimetypes:video/mp4|max:50000000',
+            'trailer_file' => 'filled|mimetypes:video/mp4|max:1000000',
+            'thumb_file' => 'filled|mimetypes:image/jpeg,image/png|max:5000',
+            'banner_file' => 'filled|mimetypes:image/jpeg,image/png|max:10000',
         ];
     }
 }
