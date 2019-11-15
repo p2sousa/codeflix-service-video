@@ -30,6 +30,11 @@ trait UploadFiles
         });
     }
 
+    public function relativeFilePath($value)
+    {
+        return "{$this->uploadDirectory()}/{$value}";
+    }
+
     /**
      * @param UploadedFile[] $files
      */
@@ -85,14 +90,8 @@ trait UploadFiles
         return $files;
     }
 
-    public function getFileUrl($file)
+    public function getFileUrl($filename)
     {
-        $path = "{$this->id}/{$file}";
-
-        if (\Storage::exists($path)){
-            return \Storage::url($path);
-        }
-
-        return null;
+        return \Storage::url($this->relativeFilePath($filename));
     }
 }

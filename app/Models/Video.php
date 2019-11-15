@@ -20,6 +20,11 @@ class Video extends Model
     const RATING_16 = '16';
     const RATING_18 = '18';
 
+    const VIDEO_FILE_MAX_SIZE = 1024 * 1024 * 50; // 50GB
+    const TRAILER_FILE_MAX_SIZE = 1024 * 1024 * 1; // 1GB
+    const BANNER_FILE_MAX_SIZE = 1024 * 10; // 10MB
+    const THUMB_FILE_MAX_SIZE = 1024 * 5; // 5MB
+
     public $incrementing = false;
 
     protected $fillable = [
@@ -64,22 +69,22 @@ class Video extends Model
 
     public function getVideoFileUrlAttribute()
     {
-        return $this->getFileUrl($this->video_file);
+        return $this->video_file ? $this->getFileUrl($this->video_file) : null;
     }
 
     public function getThumbFileUrlAttribute()
     {
-        return $this->getFileUrl($this->thumb_file);
+        return $this->thumb_file ? $this->getFileUrl($this->thumb_file) : null;
     }
 
     public function getBannerFileUrlAttribute()
     {
-        return $this->getFileUrl($this->banner_file);
+        return $this->banner_file ? $this->getFileUrl($this->banner_file) : null;
     }
 
     public function getTrailerFileUrlAttribute()
     {
-        return $this->getFileUrl($this->trailer_file);
+        return $this->trailer_file ? $this->getFileUrl($this->trailer_file) : null;
     }
 
     public static function create(array $attributes = [])
