@@ -30,7 +30,10 @@ class Video extends Model
         'rating',
         'duration',
         'video_file',
-        'thumb_file'
+        'trailer_file',
+        'thumb_file',
+        'banner_file'
+
     ];
 
     protected $dates = ['deleted_at'];
@@ -52,6 +55,31 @@ class Video extends Model
             self::RATING_16,
             self::RATING_18
         ];
+    }
+
+    public static function fileFields(): array
+    {
+        return ['video_file', 'trailer_file', 'thumb_file', 'banner_file'];
+    }
+
+    public function getVideoFileUrlAttribute()
+    {
+        return $this->getFileUrl($this->video_file);
+    }
+
+    public function getThumbFileUrlAttribute()
+    {
+        return $this->getFileUrl($this->thumb_file);
+    }
+
+    public function getBannerFileUrlAttribute()
+    {
+        return $this->getFileUrl($this->banner_file);
+    }
+
+    public function getTrailerFileUrlAttribute()
+    {
+        return $this->getFileUrl($this->trailer_file);
     }
 
     public static function create(array $attributes = [])
@@ -118,11 +146,6 @@ class Video extends Model
     public function genres()
     {
         return$this->belongsToMany(Genre::class)->withTrashed();
-    }
-
-    public static function fileFields(): array
-    {
-        return ['video_file', 'thumb_file'];
     }
 
     protected function uploadDirectory()

@@ -90,7 +90,6 @@ class UploadFilesUnitTest extends TestCase
         $this->assertCount(0, $attributes);
         $this->assertCount(0, $files);
 
-
         $attributes = ['file1' => 'test'];
         $files = UploadFilesStub::extractFiles($attributes);
         $this->assertCount(1, $attributes);
