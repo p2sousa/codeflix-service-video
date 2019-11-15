@@ -1,0 +1,65 @@
+version: "3"
+
+services:
+
+  app:
+    build: .
+    container_name: codeflix-video-app
+    environment:
+      - GOOGLE_CLOUD_PROJECT_ID=${GOOGLE_CLOUD_PROJECT_ID}
+      - GOOGLE_CLOUD_KEY_FILE=${GOOGLE_CLOUD_KEY_FILE}
+      - GOOGLE_CLOUD_STORAGE_BUCKET=${GOOGLE_CLOUD_STORAGE_BUCKET}
+      - GOOGLE_CLOUD_STORAGE_PATH_PREFIX=${GOOGLE_CLOUD_STORAGE_PATH_PREFIX}
+      - GOOGLE_CLOUD_STORAGE_API_URI=${GOOGLE_CLOUD_STORAGE_API_URI}
+      - TESTING_PROD=${TESTING_PROD}
+    volumes:
+      - .:/var/www
+    networks:
+      - app-network
+    depends_on:
+      - db
+      - redis
+
+  nginx:
+    build: ./.docker/nginx
+    container_name: codeflix-video-nginx
+    restart: always
+    tty: true
+    ports:
+      - "8000:80"
+    volumes:
+      - .:/var/www
+    networks:
+      - app-network
+    depends_on:
+      - app
+
+  redis:
+    image: redis:alpine
+    container_name: codeflix-video-redis
+    expose:
+      - 6379
+    networks:
+      - app-network
+
+  db:
+    image: mysql:5.7
+    command: --innodb-use-native-aio=0
+    container_name: codeflix-videos-db
+    restart: always
+    tty: true
+    volumes:
+      - ./.docker/database/data:/var/lib/mysql
+      - ./.docker/database/config:/docker-entrypoint-initdb.d
+    ports:
+      - "3336:3306"
+    environment:
+      - MYSQL_DATABASE=codeflix_video
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_ROOT=root
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
