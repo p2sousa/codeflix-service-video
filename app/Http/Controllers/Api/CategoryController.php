@@ -30,6 +30,11 @@ class CategoryController extends BasicController
         ];
     }
 
+    protected function resourceCollection()
+    {
+        return $this->resource();
+    }
+
     protected function resource()
     {
         return CategoryResource::class;
