@@ -10,6 +10,7 @@ abstract class BasicController extends Controller
     protected abstract function model();
     protected abstract function rulesStore();
     protected abstract function rulesUpdate();
+    protected abstract function resource();
 
     public function index()
     {
@@ -21,7 +22,9 @@ abstract class BasicController extends Controller
         $validateData = $this->validate($request, $this->rulesStore());
         $obj = $this->model()::create($validateData);
         $obj->refresh();
-        return $obj;
+
+        $resource = $this->resource();
+        return new $resource($obj);
     }
 
     public function update(Request $request, $id)
@@ -30,12 +33,17 @@ abstract class BasicController extends Controller
         $obj = $this->findOrFail($id);
         $obj->update($validation);
         $obj->refresh();
-        return $obj;
+
+        $resource = $this->resource();
+        return new $resource($obj);
     }
 
     public function show($id)
     {
-        return $this->findOrFail($id);
+        $obj = $this->findOrFail($id);
+
+        $resource = $this->resource();
+        return new $resource($obj);
     }
 
     public function destroy($id)

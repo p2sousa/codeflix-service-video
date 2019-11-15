@@ -22,4 +22,7 @@ echo "rodando migrations...."
 php artisan key:generate
 php artisan migrate:refresh --seed
 
+echo "publicando uploads..."
+php artisan storage:link
+
 php-fpm

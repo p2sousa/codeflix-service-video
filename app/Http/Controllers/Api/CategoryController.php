@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Http\Resources\CategoryResource;
 use App\Models\Category;
 
 class CategoryController extends BasicController
@@ -27,5 +28,10 @@ class CategoryController extends BasicController
             'description' => 'nullable',
             'is_active' => 'boolean'
         ];
+    }
+
+    protected function resource()
+    {
+        return CategoryResource::class;
     }
 }
