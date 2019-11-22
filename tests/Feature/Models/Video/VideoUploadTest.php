@@ -6,9 +6,12 @@ use App\Models\Video;
 use Illuminate\Database\Events\TransactionCommitted;
 use Illuminate\Http\UploadedFile;
 use Tests\Exceptions\TestException;
+use Tests\Traits\TestProd;
 
 class VideoUploadTest extends BaseVideoTest
 {
+    use TestProd;
+
     public function testCreateWithFile()
     {
         \Storage::fake();
@@ -156,6 +159,7 @@ class VideoUploadTest extends BaseVideoTest
 
     public function testFileUrlWithGcsDrive()
     {
+        $this->skipTestIfNotProd();
         $fileFields = [];
 
         foreach (Video::fileFields() as $field) {
