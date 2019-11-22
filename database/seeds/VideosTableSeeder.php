@@ -8,8 +8,8 @@ use Illuminate\Http\UploadedFile;
 
 class VideosTableSeeder extends Seeder
 {
-    private $allGenres;
-    private $relations = [
+    protected $allGenres;
+    protected $relations = [
         'genres_id' => [],
         'categories_id' => []
     ];
@@ -21,11 +21,10 @@ class VideosTableSeeder extends Seeder
      */
     public function run()
     {
-        $dir = Storage::getDriver()->getAdapter()->getPathPrefix();
-        File::deleteDirectory($dir, true);
-
+        $dir = \Storage::getDriver()->getAdapter()->getPathPrefix();
+        \File::deleteDirectory($dir, true);
         $self = $this;
-        $this->allGenres = Genre::all();
+        $this->allGenres = Genre::All();
         Model::reguard();
         factory(Video::class, 50)
             ->make()
@@ -35,11 +34,12 @@ class VideosTableSeeder extends Seeder
                     array_merge(
                         $video->toArray(),
                         [
-                            'thumb_file' => $self->getImageFile(),
-                            'banner_file' => $self->getImageFile(),
-                            'trailer_file' => $self->getVideoFile(),
                             'video_file' => $self->getVideoFile(),
-                        ]
+                            'thumb_file' => $self->getImageFile(),
+                            'trailer_file' => $self->getVideoFile(),
+                            'banner_file' => $self->getImageFile()
+                        ],
+                        $self->relations
                     )
                 );
             });
@@ -49,13 +49,13 @@ class VideosTableSeeder extends Seeder
     public function fetchRelations()
     {
         $subGenres = $this->allGenres->random(5)->load('categories');
-        $categoriesId = [];
-        foreach ($subGenres as $genre) {
-            array_push($categoriesId, ...$genre->categories->pluck('id')->toArray());
-        }
-        $categoriesId = array_unique($categoriesId);
         $genresId = $subGenres->pluck('id')->toArray();
-        $this->relations['categories_id'] = $categoriesId;
+        $cagegoriesId = [];
+        foreach ($subGenres as $genre){
+            array_push($cagegoriesId, ...$genre->categories()->pluck('id')->toArray());
+        }
+        $cagegoriesId = array_unique($cagegoriesId);
+        $this->relations['categories_id'] = $cagegoriesId;
         $this->relations['genres_id'] = $genresId;
     }
 

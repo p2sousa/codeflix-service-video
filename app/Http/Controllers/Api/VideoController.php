@@ -3,19 +3,18 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\traits\BasicCrud;
 use App\Http\Requests\VideoRequest;
+use App\Http\Resources\VideoResource;
 use App\Models\Video;
 
 class VideoController extends Controller
 {
-    public function index()
-    {
-        return Video::all();
-    }
+    use BasicCrud;
 
-    public function show(Video $video)
+    protected function model()
     {
-        return $video;
+        return Video::class;
     }
 
     public function store(VideoRequest $request)
@@ -23,7 +22,8 @@ class VideoController extends Controller
         $validateData = $request->validated();
         $video = Video::create($validateData);
         $video->refresh();
-        return $video;
+        $resource = $this->resource();
+        return new $resource($video);
     }
 
     public function update(VideoRequest $request, Video $video)
@@ -31,12 +31,17 @@ class VideoController extends Controller
         $validation = $request->validated();
         $video->update($validation);
         $video->refresh();
-        return $video;
+        $resource = $this->resource();
+        return new $resource($video);
     }
 
-    public function destroy(Video $video)
+    protected function resourceCollection()
     {
-        $video->delete();
-        return response()->noContent();
+        return $this->resource();
+    }
+
+    protected function resource()
+    {
+        return VideoResource::class;
     }
 }

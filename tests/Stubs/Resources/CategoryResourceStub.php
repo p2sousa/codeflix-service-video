@@ -1,10 +1,11 @@
 <?php
 
-namespace App\Http\Resources;
+
+namespace Tests\Stubs\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class GenreResource extends JsonResource
+class CategoryResourceStub extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -14,8 +15,6 @@ class GenreResource extends JsonResource
      */
     public function toArray($request)
     {
-        return parent::toArray($request) + [
-                'categories' => CategoryResource::collection($this->categories)
-            ];
+        return parent::toArray($request);
     }
 }
