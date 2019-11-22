@@ -2,15 +2,13 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Http\Resources\CastMemberResource;
 use App\Models\CastMember;
 
 class CastMemberController extends BasicController
 {
     private $rules;
 
-    /**
-     * CastMemberController constructor.
-     */
     public function __construct()
     {
         $this->rules = [
@@ -34,4 +32,13 @@ class CastMemberController extends BasicController
         return $this->rules;
     }
 
+    protected function resourceCollection()
+    {
+        return $this->resource();
+    }
+
+    protected function resource()
+    {
+        return CastMemberResource::class;
+    }
 }
