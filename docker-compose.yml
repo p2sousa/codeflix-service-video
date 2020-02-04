@@ -8,6 +8,7 @@ services:
     entrypoint: ./.docker/entrypoint.sh
     ports:
       - "9000"
+      - "3000:3000"
     environment:
       - _DB_HOST=db
       - _DB_DATABASE=codeflix_videos

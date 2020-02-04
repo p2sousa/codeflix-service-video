@@ -1,6 +1,4 @@
-FROM php:7.3.6-fpm-alpine3.9
-
-LABEL maintainer="Pablo Sousa <pablosousa.ads@gmail.com>"
+FROM php:7.3.6-fpm-alpine3.10
 
 # install extensions and aplications linux
 RUN apk add --no-cache openssl
