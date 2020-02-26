@@ -32,8 +32,8 @@ before_script:
   - IMAGE_LATEST_VERSION="${IMAGE_NAME}:latest"
 
 script:
-  - cd backend
   - vendor/bin/phpunit --coverage-clover=coverage.xml
+  - cd ..
   - docker build -t "${IMAGE_LATEST_VERSION}" -f Dockerfile.prod .
 
 after_success:
