@@ -8,12 +8,15 @@ services:
     entrypoint: ./.docker/entrypoint.sh
     ports:
       - "9000"
+      - "3000:3000"
+      - "35729:35729"
     environment:
       - _DB_HOST=db
       - _DB_DATABASE=codeflix_videos
       - _DB_USERNAME=root
       - _DB_PASSWORD=root
       - _TEST_DB_DATABASE=codeflix_videos_test
+      - CHOKIDAR_USELLING=true
     volumes:
       - .:/var/www
       - ./.docker/php/log:/var/log:rw,cached

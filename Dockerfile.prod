@@ -22,6 +22,7 @@ RUN ln -s public html
 COPY ./.docker/php/php.ini /usr/local/etc/php/conf.d/
 COPY . /var/www
 
+WORKDIR /var/www/backend
 RUN composer install \
   && php artisan cache:clear \
   && chmod -R 777 storage
@@ -38,7 +39,7 @@ WORKDIR /var/www
 RUN rm -rf /var/www/html
 
 COPY --from=builder /usr/local/etc/php/conf.d/ /usr/local/etc/php/conf.d/
-COPY --from=builder /var/www .
+COPY --from=builder /var/www/backend .
 
 EXPOSE 9000
 

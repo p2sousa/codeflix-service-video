@@ -20,6 +20,7 @@ yarn-error.log
 
 ### PhpStorm ###
 .idea/
+.vscode/
 
 ### Docker ###
 .docker/nginx/log

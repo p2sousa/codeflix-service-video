@@ -23,15 +23,17 @@ cache:
 
 before_script:
   - cp .docker/php/.env.travis backend/.env.testing
+  - cd backend
   - composer self-update
   - composer install --no-interaction
-  - cp backend/.env.example backend/.env
-  - backend/.env | sort
+  - cp .env.example .env
+  - .env | sort
   - IMAGE_NAME=p2sousa/codeflix-service-video
   - IMAGE_LATEST_VERSION="${IMAGE_NAME}:latest"
 
 script:
-  - backend/vendor/bin/phpunit --coverage-clover=coverage.xml
+  - vendor/bin/phpunit --coverage-clover=coverage.xml
+  - cd ..
   - docker build -t "${IMAGE_LATEST_VERSION}" -f Dockerfile.prod .
 
 after_success:
