@@ -6,9 +6,9 @@ interface DashboardProps {
 }
 
 const Dashboard = (props: DashboardProps) => {
-    return (
-        <Page title={'Dashboard'}/>
-    );
+  return (
+    <Page title={'Dashboard'}/>
+  );
 };
 
 export default Dashboard;

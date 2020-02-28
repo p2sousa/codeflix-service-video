@@ -6,9 +6,9 @@ interface ListProps {
 }
 
 const List = (props: ListProps) => {
-    return (
-        <Page title={'Listagem de categorias'}/>
-    );
+  return (
+    <Page title={'Listagem de categorias'}/>
+  );
 };
 
 export default List;
