@@ -1,21 +1,18 @@
 import React from 'react';
-import './App.css';
-import {Navbar} from "./components/Navbar";
-import {Page} from "./components/Page";
-import {Box} from "@material-ui/core";
+import { Box } from '@material-ui/core';
+import { BrowserRouter } from 'react-router-dom';
+import { Navbar } from './components/Navbar';
+import AppRouter from './routes/AppRouter';
 
-const App = () => {
-  return (
-      <React.Fragment>
-        <Navbar/>
-        <Box paddingTop={'70px'}>
-          <Page title={'Categorias'}>
-            Conteudo
-          </Page>
-        </Box>
-
-      </React.Fragment>
-  );
-}
+const App = () => (
+  <>
+    <BrowserRouter>
+      <Navbar />
+      <Box paddingTop="70px">
+        <AppRouter />
+      </Box>
+    </BrowserRouter>
+  </>
+);
 
 export default App;
