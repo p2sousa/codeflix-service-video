@@ -1,23 +1,25 @@
-import * as React from "react";
-import {AppBar, Button, Theme, Toolbar, Typography} from "@material-ui/core";
-import logo from "../../static/img/logo.png";
-import {makeStyles} from "@material-ui/core/styles";
-import {Menu} from "./Menu";
+import * as React from 'react';
+import {
+  AppBar, Button, Theme, Toolbar, Typography,
+} from '@material-ui/core';
+import { makeStyles } from '@material-ui/core/styles';
+import logo from '../../static/img/logo.png';
+import { Menu } from './Menu';
 
 const useStyles = makeStyles((theme: Theme) => ({
   toolbar: {
-    backgroundColor: '#000000'
+    backgroundColor: '#000000',
   },
   title: {
     flexGrow: 1,
-    textAlign: 'center'
+    textAlign: 'center',
   },
   logo: {
     width: 100,
     [theme.breakpoints.up('sm')]: {
       width: 170,
-    }
-  }
+    },
+  },
 }));
 
 export const Navbar: React.FC = () => {
@@ -26,12 +28,12 @@ export const Navbar: React.FC = () => {
   return (
     <AppBar>
       <Toolbar className={classes.toolbar}>
-        <Menu/>
+        <Menu />
         <Typography className={classes.title}>
-          <img src={logo} alt="CodeFlix" className={classes.logo}/>
+          <img src={logo} alt="CodeFlix" className={classes.logo} />
         </Typography>
 
-        <Button color={'inherit'}>Login</Button>
+        <Button color="inherit">Login</Button>
       </Toolbar>
     </AppBar>
   );

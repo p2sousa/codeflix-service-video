@@ -1,11 +1,10 @@
 import * as React from 'react';
-import {Route, Switch} from "react-router";
-import routes from "./index";
+import { Route, Switch } from 'react-router';
+import routes from './index';
 
-const AppRouter = () => {
-  return (
-    <Switch>
-      {
+const AppRouter = () => (
+  <Switch>
+    {
         routes.map(
           (route, key) => (
             <Route
@@ -14,11 +13,10 @@ const AppRouter = () => {
               component={route.component}
               exact={route.exact === true}
             />
-          )
+          ),
         )
       }
-    </Switch>
-  );
-};
+  </Switch>
+);
 
 export default AppRouter;
