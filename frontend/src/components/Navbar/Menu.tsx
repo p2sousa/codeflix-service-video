@@ -14,7 +14,7 @@ export const Menu = () => {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
   const handleOpen = (event: any) => setAnchorEl(event.currentTarget);
-  const handleCloese = () => setAnchorEl(null);
+  const handleClose = () => setAnchorEl(null);
 
   return (
     <>
@@ -33,7 +33,7 @@ export const Menu = () => {
         id="menu-appbar"
         open={open}
         anchorEl={anchorEl}
-        onClose={handleCloese}
+        onClose={handleClose}
         anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
         transformOrigin={{ vertical: 'top', horizontal: 'center' }}
         getContentAnchorEl={null}
@@ -47,7 +47,7 @@ export const Menu = () => {
                   key={key}
                   component={Link}
                   to={route.path as string}
-                  onClick={handleCloese}
+                  onClick={handleClose}
                 >
                   {route.label}
                 </MenuItem>
