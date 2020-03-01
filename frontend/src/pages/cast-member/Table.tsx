@@ -5,17 +5,22 @@ import { Chip } from '@material-ui/core';
 import { format, parseISO } from 'date-fns';
 import { httpVideo } from '../../util/http';
 
+const CastMemberTypeMap = {
+  1: 'Diretor',
+  2: 'Ator',
+};
+
 const columnsDefinition: MUIDataTableColumnDef[] = [
   {
     name: 'name',
     label: 'Nome',
   },
   {
-    name: 'categories',
-    label: 'Categorias',
+    name: 'type',
+    label: 'Tipo',
     options: {
       customBodyRender(value, tableMeta, updateValue) {
-        return value.map((category) => category.name).join(', ');
+        return CastMemberTypeMap[value];
       },
     },
   },
@@ -46,12 +51,12 @@ const Table = (props: Props) => {
   const [data, setData] = useState([]);
 
   useEffect(() => {
-    async function loadGenres() {
-      const response = await httpVideo.get('genres');
+    async function loadCastMembers() {
+      const response = await httpVideo.get('cast_members');
       setData(response.data.data);
     }
 
-    loadGenres();
+    loadCastMembers();
   }, []);
 
   return (

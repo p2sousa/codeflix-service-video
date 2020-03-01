@@ -47,7 +47,7 @@ const Table = (props: Props) => {
 
   return (
     <MUIDataTable
-      title="teste"
+      title=""
       columns={columnsDefinition}
       data={data}
     />
