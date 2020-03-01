@@ -7,12 +7,13 @@ import { Route } from 'react-router';
 import { Link as RouterLink } from 'react-router-dom';
 import { Location } from 'history';
 import RouteParser from 'route-parser';
-import { Container } from '@material-ui/core';
+import {Box, Container} from '@material-ui/core';
 import routes from '../routes';
 
 const breadcrumbNameMap: { [key: string]: string } = {};
 routes.forEach((route) => breadcrumbNameMap[route.path as string] = route.label);
 
+// eslint-disable-next-line no-unused-vars
 const useStyles = makeStyles((theme: Theme) => createStyles({
   linkRouter: {
     color: '#4db5ab',
@@ -70,11 +71,13 @@ export default function Breadcrumbs() {
 
   return (
     <Container>
-      <Route>
-        {
+      <Box paddingBottom={2}>
+        <Route>
+          {
             ({ location }) => makeBreadcrump(location)
-        }
-      </Route>
+          }
+        </Route>
+      </Box>
     </Container>
   );
 }
