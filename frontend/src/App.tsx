@@ -3,14 +3,14 @@ import { Box } from '@material-ui/core';
 import { BrowserRouter } from 'react-router-dom';
 import { Navbar } from './components/Navbar';
 import AppRouter from './routes/AppRouter';
-import Breadcrumbs from "./components/Breadcrumps";
+import Breadcrumbs from './components/Breadcrumps';
 
 const App = () => (
   <>
     <BrowserRouter>
       <Navbar />
       <Box paddingTop="70px">
-        <Breadcrumbs/>
+        <Breadcrumbs />
         <AppRouter />
       </Box>
     </BrowserRouter>
