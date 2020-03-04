@@ -3,7 +3,7 @@ import MUIDataTable, { MUIDataTableColumnDef } from 'mui-datatables';
 import { useEffect, useState } from 'react';
 import { Chip } from '@material-ui/core';
 import { format, parseISO } from 'date-fns';
-import { httpVideo } from '../../util/http';
+import castMemberHttp from '../../util/http/cast-meber-http';
 
 const CastMemberTypeMap = {
   1: 'Diretor',
@@ -19,7 +19,7 @@ const columnsDefinition: MUIDataTableColumnDef[] = [
     name: 'type',
     label: 'Tipo',
     options: {
-      customBodyRender(value, tableMeta, updateValue) {
+      customBodyRender(value, tableMeta) {
         return CastMemberTypeMap[value];
       },
     },
@@ -28,7 +28,7 @@ const columnsDefinition: MUIDataTableColumnDef[] = [
     name: 'is_active',
     label: 'Ativo?',
     options: {
-      customBodyRender(value, tableMeta, updateValue) {
+      customBodyRender(value, tableMeta) {
         return value ? <Chip label="Sim" color="primary" /> : <Chip label="Não" color="secondary" />;
       },
     },
@@ -37,22 +37,26 @@ const columnsDefinition: MUIDataTableColumnDef[] = [
     name: 'created_at',
     label: 'Criado em',
     options: {
-      customBodyRender(value, tableMeta, updateValue) {
+      customBodyRender(value, tableMeta) {
         return <span>{format(parseISO(value), 'dd/MM/yyyy')}</span>;
       },
     },
   },
 ];
 
-type Props = {};
+interface CastMember {
+  id: string;
+  name: string;
+}
 
-// eslint-disable-next-line no-unused-vars
+interface Props {}
+
 const Table = (props: Props) => {
-  const [data, setData] = useState([]);
+  const [data, setData] = useState<CastMember[]>([]);
 
   useEffect(() => {
     async function loadCastMembers() {
-      const response = await httpVideo.get('cast_members');
+      const response = await castMemberHttp.list<{data: CastMember[]}>();
       setData(response.data.data);
     }
 

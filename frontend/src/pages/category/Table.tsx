@@ -3,7 +3,7 @@ import MUIDataTable, { MUIDataTableColumnDef } from 'mui-datatables';
 import { useEffect, useState } from 'react';
 import { Chip } from '@material-ui/core';
 import { format, parseISO } from 'date-fns';
-import { httpVideo } from '../../util/http';
+import categoryHttp from '../../util/http/category-http';
 
 const columnsDefinition: MUIDataTableColumnDef[] = [
   {
@@ -14,7 +14,7 @@ const columnsDefinition: MUIDataTableColumnDef[] = [
     name: 'is_active',
     label: 'Ativo?',
     options: {
-      customBodyRender(value, tableMeta, updateValue) {
+      customBodyRender(value, tableMeta) {
         return value ? <Chip label="Sim" color="primary" /> : <Chip label="Não" color="secondary" />;
       },
     },
@@ -23,22 +23,26 @@ const columnsDefinition: MUIDataTableColumnDef[] = [
     name: 'created_at',
     label: 'Criado em',
     options: {
-      customBodyRender(value, tableMeta, updateValue) {
+      customBodyRender(value, tableMeta) {
         return <span>{format(parseISO(value), 'dd/MM/yyyy')}</span>;
       },
     },
   },
 ];
 
+interface Category {
+  id: string;
+  name: string;
+}
+
 type Props = {};
 
-// eslint-disable-next-line no-unused-vars
 const Table = (props: Props) => {
-  const [data, setData] = useState([]);
+  const [data, setData] = useState<Category[]>([]);
 
   useEffect(() => {
     async function loadCategories() {
-      const response = await httpVideo.get('categories');
+      const response = await categoryHttp.list<{data: Category[]}>();
       setData(response.data.data);
     }
 
