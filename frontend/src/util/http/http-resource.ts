@@ -1,4 +1,4 @@
-import {AxiosInstance, AxiosResponse} from 'axios';
+import { AxiosInstance, AxiosResponse } from 'axios';
 
 export default class HttpResource {
   // eslint-disable-next-line no-useless-constructor
