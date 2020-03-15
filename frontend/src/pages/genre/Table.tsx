@@ -3,7 +3,7 @@ import MUIDataTable, { MUIDataTableColumnDef } from 'mui-datatables';
 import { useEffect, useState } from 'react';
 import { Chip } from '@material-ui/core';
 import { format, parseISO } from 'date-fns';
-import { httpVideo } from '../../util/http';
+import genreHttp from '../../util/http/genre-http';
 
 const columnsDefinition: MUIDataTableColumnDef[] = [
   {
@@ -14,7 +14,7 @@ const columnsDefinition: MUIDataTableColumnDef[] = [
     name: 'categories',
     label: 'Categorias',
     options: {
-      customBodyRender(value, tableMeta, updateValue) {
+      customBodyRender(value, tableMeta) {
         return value.map((category) => category.name).join(', ');
       },
     },
@@ -23,7 +23,7 @@ const columnsDefinition: MUIDataTableColumnDef[] = [
     name: 'is_active',
     label: 'Ativo?',
     options: {
-      customBodyRender(value, tableMeta, updateValue) {
+      customBodyRender(value, tableMeta) {
         return value ? <Chip label="Sim" color="primary" /> : <Chip label="Não" color="secondary" />;
       },
     },
@@ -32,22 +32,26 @@ const columnsDefinition: MUIDataTableColumnDef[] = [
     name: 'created_at',
     label: 'Criado em',
     options: {
-      customBodyRender(value, tableMeta, updateValue) {
+      customBodyRender(value, tableMeta) {
         return <span>{format(parseISO(value), 'dd/MM/yyyy')}</span>;
       },
     },
   },
 ];
 
-type Props = {};
+interface Genre {
+  id: string;
+  name: string;
+}
 
-// eslint-disable-next-line no-unused-vars
+interface Props {}
+
 const Table = (props: Props) => {
-  const [data, setData] = useState([]);
+  const [data, setData] = useState<Genre[]>([]);
 
   useEffect(() => {
     async function loadGenres() {
-      const response = await httpVideo.get('genres');
+      const response = await genreHttp.list<{data: Genre[]}>();
       setData(response.data.data);
     }
 
