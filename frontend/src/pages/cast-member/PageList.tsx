@@ -11,9 +11,10 @@ interface ListProps {}
 // eslint-disable-next-line no-unused-vars
 const PageList = (props: ListProps) => (
   <Page title="Listagem de membros de elencos">
-    <Box dir="rtl">
+    <Box dir="rtl" paddingBottom={2}>
       <Fab
         title="Adicionar membro de elenco"
+        color="secondary"
         size="small"
         component={Link}
         to="/cast-members/create"

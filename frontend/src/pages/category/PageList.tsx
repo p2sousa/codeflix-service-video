@@ -11,9 +11,10 @@ interface ListProps {}
 // eslint-disable-next-line no-unused-vars
 const PageList = (props: ListProps) => (
   <Page title="Listagem de categorias">
-    <Box dir="rtl">
+    <Box dir="rtl" paddingBottom={2}>
       <Fab
         title="Adicionar categoria"
+        color="secondary"
         size="small"
         component={Link}
         to="/categories/create"
