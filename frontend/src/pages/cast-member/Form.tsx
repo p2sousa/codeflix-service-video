@@ -18,7 +18,8 @@ const Form = () => {
   const classes = useStyles();
   const buttonProps: ButtonProps = {
     className: classes.submit,
-    variant: 'outlined',
+    color: 'secondary',
+    variant: 'contained',
   };
 
   const {
@@ -34,7 +35,7 @@ const Form = () => {
   }, [register]);
 
   async function onSubmit(formData, event) {
-    const response = await castMemberHttp.create(formData);
+    await castMemberHttp.create(formData);
   }
 
   return (
@@ -57,13 +58,15 @@ const Form = () => {
             setValue('type', parseInt(e.target.value));
           }}
         >
-          <FormControlLabel value="1" control={<Radio />} label="Diretor" />
-          <FormControlLabel value="2" control={<Radio />} label="Ator" />
+          <FormControlLabel value="1" control={<Radio color="primary" />} label="Diretor" />
+          <FormControlLabel value="2" control={<Radio color="primary" />} label="Ator" />
         </RadioGroup>
       </FormControl>
 
       <Box dir="rtl">
-        <Button {...buttonProps} onClick={() => onSubmit(getValues(), null)}>Salvar</Button>
+        <Button {...buttonProps} color="primary" onClick={() => onSubmit(getValues(), null)}>
+          Salvar
+        </Button>
         <Button {...buttonProps} type="submit">Salvar e continuar editando</Button>
       </Box>
     </form>

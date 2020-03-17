@@ -16,7 +16,8 @@ const Form = () => {
   const classes = useStyles();
   const buttonProps: ButtonProps = {
     className: classes.submit,
-    variant: 'outlined',
+    color: 'secondary',
+    variant: 'contained',
   };
 
   const { register, handleSubmit, getValues } = useForm({
@@ -26,7 +27,7 @@ const Form = () => {
   });
 
   async function onSubmit(formData, event) {
-    const response = await categoryHttp.create(formData);
+    await categoryHttp.create(formData);
   }
 
   return (
@@ -53,13 +54,14 @@ const Form = () => {
 
       <Checkbox
         name="is_active"
+        color="primary"
         inputRef={register}
         defaultChecked
       />
       Ativo?
 
       <Box dir="rtl">
-        <Button {...buttonProps} onClick={() => onSubmit(getValues(), null)}>Salvar</Button>
+        <Button {...buttonProps} color="primary" onClick={() => onSubmit(getValues(), null)}>Salvar</Button>
         <Button {...buttonProps} type="submit">Salvar e continuar editando</Button>
       </Box>
     </form>
