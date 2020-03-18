@@ -18,7 +18,8 @@ const Form = () => {
   const classes = useStyles();
   const buttonProps: ButtonProps = {
     className: classes.submit,
-    variant: 'outlined',
+    color: 'secondary',
+    variant: 'contained',
   };
 
   const [categories, setCategories] = useState<any[]>([]);
@@ -43,7 +44,7 @@ const Form = () => {
   }, []);
 
   async function onSubmit(formData, event) {
-    const response = await genreHttp.create(formData);
+    await genreHttp.create(formData);
   }
 
   return (
@@ -65,7 +66,7 @@ const Form = () => {
         fullWidth
         variant="outlined"
         margin="normal"
-        onChange={(e) => {
+        onChange={(e: any) => {
           setValue('categories_id', e.target.value);
         }}
         SelectProps={{
@@ -85,7 +86,7 @@ const Form = () => {
       </TextField>
 
       <Box dir="rtl">
-        <Button {...buttonProps} onClick={() => onSubmit(getValues(), null)}>Salvar</Button>
+        <Button {...buttonProps} color="primary" onClick={() => onSubmit(getValues(), null)}>Salvar</Button>
         <Button {...buttonProps} type="submit">Salvar e continuar editando</Button>
       </Box>
     </form>
